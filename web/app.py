@@ -34,9 +34,10 @@ def handle_route_get():
 def handle_route_post():
     key = request.form.get('key')
     val = request.form.get('val')
-    node = hash_ring.get_node(request.args.get('key'))
-    url = "http://" + node + "/cache" + ":5000"
-    return requests.post(url = url, data = {'key': request.args.get('key'), 'value': request.args.get('value')})
+    node = hash_ring.get_node(key)
+    url = "http://" + node + "/cache"
+    requests.post(url = url, data = {'key': key, 'val': val})
+    return "OK"
 
 #this method knows the key is here
 @app.route('/cache', methods=['GET'])
@@ -54,9 +55,9 @@ def handle_cache_get():
 def handle_cache_post():
     #app.logger.info('Processing GET')
     key = request.form.get('key')
-    val = request.form.get('value')
+    val = request.form.get('val')
     cache.set(key, val)
-    return 'Added key :' + key
+    return 'OK'
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
