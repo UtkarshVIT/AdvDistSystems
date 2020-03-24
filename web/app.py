@@ -67,6 +67,16 @@ if __name__ == '__main__':
 #     routing_info = requests.form['routing_info']
 #     curr_node = requests.form['curr_node']
 
+@app.route('/migrate/<int:key_min>/<int:key_max>', methods=['GET'])
+def migrate_keys(key_min, key_max):
+    # Construct a list of keys from the key you were given
+    keys = cache.get_many(range(key_min, key_max))
+    # Update routing information
+
+    # Return keys and routing info
+    
+    
+
 """def create_hash(key):
     #Given a string key, return a hash value.
     return long(md5.md5(key).hexdigest(), 16)
