@@ -14,24 +14,12 @@ class ConsistentHashRing(object):
         for node in nodes:
             self.add_node(node["ip"], node["key"], true)
 
-    def add_node(self, node, key, init):
+    def add_node(self, node, key):
         """Adds a `node` to the hash ring (including a number of replicas).
         """
-        if init:
-            self.ring[key] = node
-            self._sorted_keys.append(key)
-            self._sorted_keys.sort()
-        else:
-            # Find what node you have to copy keys from
-            temp = self._sorted_keys[0]
-            target_node = None
-            for _sorted_key in self._sorted_keys:
-                if _sorted_key > key && key > temp:
-                    target_node = self.ring[key]
-                    break
-                else:
-                    temp = _sorted_key
-            # Get the keys from that node
+        self.ring[key] = node
+        self._sorted_keys.append(key)
+        self._sorted_keys.sort()
 
     def get_node(self, string_key):
         """Given a string key a corresponding node in the hash ring is returned

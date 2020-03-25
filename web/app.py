@@ -1,6 +1,6 @@
 from __future__ import print_function
 import requests
-from flask import Flask, session, request
+from flask import Flask, session, request, jsonify
 import logging
 import md5
 from werkzeug.contrib.cache import SimpleCache
@@ -67,15 +67,35 @@ if __name__ == '__main__':
 #     routing_info = requests.form['routing_info']
 #     curr_node = requests.form['curr_node']
 
-@app.route('/migrate/<int:key_min>/<int:key_max>', methods=['GET'])
-def migrate_keys(key_min, key_max):
+@app.route('/migrate/<int:key_min>/<int:key_max>/<node>', methods=['GET'])
+def migrate_keys(key_min, key_max, node):
     # Construct a list of keys from the key you were given
     keys = cache.get_many(range(key_min, key_max))
     # Update routing information
-
+    hash_ring.add_node(node, key_max)
     # Return keys and routing info
+    return jsonify(keys = keys, hash_ring = hash_ring)
     
+@app.route('/add_node/<int:key>/<node>')
+def add_node(key, node):
+    # Find what node you have to copy keys from
+    temp = self._sorted_keys[0]
+    target_node = None
+
+    for _sorted_key in self._sorted_keys:
+        if _sorted_key > key && key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
+            target_node = self.ring[_sorted_key]
+            break
+        else:
+            temp = _sorted_key
     
+    # Get the keys from that node
+    url = "http://" + target_node + "/migrate/" + temp + "/" key
+    keys_and_ring = requests.get(url = url).text # Fix this once migrate is finished
+    
+    # Send the keys to the correct node
+    url = "http://" + node + "/new_api_call/" + temp + "/" key
+
 
 """def create_hash(key):
     #Given a string key, return a hash value.
