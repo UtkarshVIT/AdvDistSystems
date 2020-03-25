@@ -20,12 +20,12 @@ with open('./config.json') as json_data_file:
 
 @app.route('/route', methods=['GET'])
 def handle_route_get():
-    
-    node = hash_ring.get_node(request.args.get('key'))
-
+    key = request.args.get('key')
+    node = hash_ring.get_node(key)
+    key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('####NODE', hash_ring.ring, node, url, request.args.get('key'))
-    res = requests.get(url = url, params = {'key': request.args.get('key')}).text
+    print('####NODE', hash_ring.ring, node, url, key)
+    res = requests.get(url = url, params = {'key': key}).text
     print('hey', res)
     return res
 
@@ -35,6 +35,7 @@ def handle_route_post():
     key = request.form.get('key')
     val = request.form.get('val')
     node = hash_ring.get_node(key)
+    key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
     requests.post(url = url, data = {'key': key, 'val': val})
     return "OK"
