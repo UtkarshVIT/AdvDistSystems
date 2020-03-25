@@ -12,7 +12,7 @@ class ConsistentHashRing(object):
         self.ring = dict()
         self._sorted_keys = []
         for node in nodes:
-            self.add_node(node["ip"], node["key"], true)
+            self.add_node(node["ip"], node["key"])
 
     def add_node(self, node, key):
         """Adds a `node` to the hash ring (including a number of replicas).

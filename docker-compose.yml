@@ -77,6 +77,25 @@ services:
     stdin_open: true
     tty: true
 
+  app4:
+    build: ./web  # path is relative to docker-compose.yml localtion
+    entrypoint:
+      - flask
+      - run
+      - --host=0.0.0.0
+    environment:
+      PYTHONUNBUFFERED: 0
+      FLASK_DEBUG: 1
+      FLASK_APP: ./app.py
+    ports:
+      - "8084:5000"  # host:container
+    volumes: ['./web:/app']
+    networks:
+      app_net:
+        ipv4_address: 172.23.0.7
+    stdin_open: true
+    tty: true
+
 networks:
     app_net:
         ipam:

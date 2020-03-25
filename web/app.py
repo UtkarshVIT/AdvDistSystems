@@ -67,34 +67,48 @@ if __name__ == '__main__':
 #     routing_info = requests.form['routing_info']
 #     curr_node = requests.form['curr_node']
 
-@app.route('/migrate/<int:key_min>/<int:key_max>/<node>', methods=['GET'])
-def migrate_keys(key_min, key_max, node):
+@app.route('/migrate/<int:key_min>/<int:key_max>', methods=['GET'])
+def migrate_keys(key_min, key_max):
     # Construct a list of keys from the key you were given
-    keys = cache.get_many(range(key_min, key_max))
-    # Update routing information
-    hash_ring.add_node(node, key_max)
+    vals = cache.get_many(range(key_min, key_max))
+
+    # TODO: Delete the retrieved keys
+
     # Return keys and routing info
-    return jsonify(keys = keys, hash_ring = hash_ring)
-    
+    return jsonify(vals = vals)
+
+@app.route('/join', methods=['POST'])
+def node_join():
+    vals = request.form.get('vals')
+    hash_ring = request.form.get('ring')
+    for val in vals:
+        cache.add(hashring.gen_key(val), val)
+
 @app.route('/add_node/<int:key>/<node>')
 def add_node(key, node):
     # Find what node you have to copy keys from
-    temp = self._sorted_keys[0]
+    temp = hash_ring._sorted_keys[0]
     target_node = None
 
-    for _sorted_key in self._sorted_keys:
-        if _sorted_key > key && key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
-            target_node = self.ring[_sorted_key]
+    for _sorted_key in hash_ring._sorted_keys:
+        if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
+            target_node = hash_ring.ring[_sorted_key]
             break
         else:
             temp = _sorted_key
     
     # Get the keys from that node
-    url = "http://" + target_node + "/migrate/" + temp + "/" key
-    keys_and_ring = requests.get(url = url).text # Fix this once migrate is finished
+    url = "http://" + target_node + "/migrate/" + temp + "/" + key 
+    vals = requests.get(url = url).json()['vals'] # Fix this once migrate is finished
     
-    # Send the keys to the correct node
-    url = "http://" + node + "/new_api_call/" + temp + "/" key
+    # Update routing information
+    hash_ring.add_node(node, key_max)
+
+    # Send the keys and routing info to the correct node
+    url = "http://" + node + "/join"
+    requests.post(url = url, data = {'vals': vals, 'ring': hash_ring})
+    
+    return 'OK'
 
 
 """def create_hash(key):
