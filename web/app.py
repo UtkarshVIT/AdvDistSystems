@@ -70,7 +70,7 @@ if __name__ == '__main__':
 @app.route('/migrate/<int:key_min>/<int:key_max>', methods=['GET'])
 def migrate_keys(key_min, key_max):
     # Construct a list of keys from the key you were given
-    vals = cache.get_many(range(key_min, key_max))
+    vals = cache.get_many(*range(key_min, key_max))
 
     # TODO: Delete the retrieved keys
 
@@ -98,11 +98,11 @@ def add_node(key, node):
             temp = _sorted_key
     
     # Get the keys from that node
-    url = "http://" + target_node + "/migrate/" + temp + "/" + key 
+    url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     vals = requests.get(url = url).json()['vals'] # Fix this once migrate is finished
     
     # Update routing information
-    hash_ring.add_node(node, key_max)
+    hash_ring.add_node(node, key)
 
     # Send the keys and routing info to the correct node
     url = "http://" + node + "/join"
