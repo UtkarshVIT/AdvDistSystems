@@ -110,6 +110,40 @@ def add_node(key, node):
     
     return 'OK'
 
+@app.route('/remove_node/<node>')
+def remove_node(node):
+    # Find the node that will receive all of the deleted node's keys
+    inv_map = {v: k for k, v in hash_ring.ring.items()}
+    for x in inv_map:
+        print(x)
+    key = inv_map[node]
+    
+    # Find what node you will have to copy the keys to
+    min_key = hash_ring._sorted_keys[0]
+    new_node = None
+    
+    # Find the next key after the target node's
+    for _sorted_key in hash_ring._sorted_keys:
+        if _sorted_key > key and key > min_key: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
+            new_node = hash_ring.ring[_sorted_key]
+            break
+        else:
+            min_key = _sorted_key
+
+    # Get all the keys from the target node
+    url = "http://" + node + "/migrate/" + str(min_key) + "/" + str(key)
+    vals = requests.get(url = url).json()['vals']
+
+    # Add the keys 
+    url = "http://" + new_node + "/join"
+    requests.post(url = url, data = {'vals': vals, 'ring': hash_ring})
+    
+    # Update routing information
+    del hash_ring.ring[key]
+
+
+
+
 
 """def create_hash(key):
     #Given a string key, return a hash value.
