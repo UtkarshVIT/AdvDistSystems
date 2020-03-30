@@ -1,4 +1,5 @@
 import md5
+import json
 import hashlib
 
 class ConsistentHashRing(object):
@@ -13,6 +14,9 @@ class ConsistentHashRing(object):
         self._sorted_keys = []
         for node in nodes:
             self.add_node(node["ip"], node["key"])
+
+    def get_ring(self):
+        return json.dumps({"ring": self.ring, "_sorted_keys": self._sorted_keys})
 
     def add_node(self, node, key):
         """Adds a `node` to the hash ring (including a number of replicas).

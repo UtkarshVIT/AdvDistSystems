@@ -63,28 +63,39 @@ def handle_cache_post():
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
 
-# @app.route('/first_setup', methods=['POST'])
-# def handle_post():
-#     routing_info = requests.form['routing_info']
-#     curr_node = requests.form['curr_node']
+# Request handler to update the state of the hash ring
+# it takes the IP and they key and inserts in into it's 
+# present hash ring
+@app.route('/update_ring', methods=['POST'])
+def handle_update_ring_post():
+    node = request.form.get('node')
+    key = request.form.get('key')
+    hash_ring.add_node(node, key)
+    return "OK"
 
+# Request handler to fetch the key value pairs in a node
+# belonging to a specific range
 @app.route('/migrate/<int:key_min>/<int:key_max>', methods=['GET'])
 def migrate_keys(key_min, key_max):
     # Construct a list of keys from the key you were given
-    vals = cache.get_many(*range(key_min, key_max))
-
     # TODO: Delete the retrieved keys
+    ls = [str(integer) for integer in range(int(key_min), int(key_max))]
+    d = cache.get_dict(*ls)
+    all_objects = [(key, d[key]) for key in d.keys() if d[key] is not None]
+    resp = {}
+    for obj in all_objects:
+        resp[obj[0]] = obj[1]
+    return jsonify(resp)
 
-    # Return keys and routing info
-    return jsonify(vals = vals)
+# Request handler to bulk update keys in the new node.
+@app.route('/bulk_update_keys', methods=['POST'])
+def bulk_update_keys():
+    dic = json.loads(request.form.get('dic'))
+    for key in dic:
+        cache.add(key, dic[key])
+    return "OK"
 
-@app.route('/join', methods=['POST'])
-def node_join():
-    vals = request.form.get('vals')
-    hash_ring = request.form.get('ring')
-    for val in vals:
-        cache.add(hashring.gen_key(val), val)
-
+# Request handler to orchestrate the addition of node
 @app.route('/add_node/<int:key>/<node>')
 def add_node(key, node):
     # Find what node you have to copy keys from
@@ -98,17 +109,22 @@ def add_node(key, node):
         else:
             temp = _sorted_key
     
-    # Get the keys from that node
+    # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
-    vals = requests.get(url = url).json()['vals'] # Fix this once migrate is finished
-    
-    # Update routing information
-    hash_ring.add_node(node, key)
+    dic = requests.get(url = url).json()
 
-    # Send the keys and routing info to the correct node
-    url = "http://" + node + "/join"
-    requests.post(url = url, data = {'vals': vals, 'ring': hash_ring})
+    # Send the fetched key-value pairs to the new node
+    url = "http://" + node + "/bulk_update_keys"
+    requests.post(url = url, data = {'dic': json.dumps(dic)})
+
+    # Update own routing information
+    hash_ring.add_node(node, key)
     
+    #Broadcast the update in routing information
+    for _key in hash_ring.ring.keys(): 
+        url = "http://" + hash_ring.ring[_key] + "/update_ring"
+        requests.post(url = url, data = {'ip': node, 'key': key})
+
     return 'OK'
 
 @app.route('/remove_node/<node>')
@@ -142,8 +158,17 @@ def remove_node(node):
     # Update routing information
     del hash_ring.ring[key]
 
+#API to fetch the key value pairs in this node
+@app.route('/fetch_keys', methods=['GET'])
+def handle_fetch_keys_get():
+    ls = [str(integer) for integer in range(0, 10000)]
+    d = cache.get_dict(*ls)
+    return jsonify([(key, d[key]) for key in d.keys() if d[key] is not None])
 
-
+#API to fetch the hash ring in this node
+@app.route('/hash_ring', methods=['GET'])
+def handle_hash_ring_get():
+    return hash_ring.get_ring()
 
 
 """def create_hash(key):
