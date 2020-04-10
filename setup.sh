@@ -10,12 +10,13 @@ sudo apt update
 #install apache
 sudo apt update /Q
 
+sudo apt-get install apache2 \Q
 #install wsgi and python essentials
-sudo apt-get install libapache2-mod-wsgi python-dev
-sudo a2enmod wsgi
+sudo apt-get install libapache2-mod-wsgi python-dev \Q
+sudo a2enmod wsgi \Q
 
 #install python pip
-sudo apt-get install python-pip
+sudo apt-get install python-pip \Q
 
 #Python modules
 sudo pip install flask
