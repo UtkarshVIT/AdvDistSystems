@@ -14,7 +14,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
 hash_ring = None
 json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
-data = json.load(json_data_file)
+data = json.loads(json_data_file)
 hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
 
 @app.route('/', methods=['GET'])
