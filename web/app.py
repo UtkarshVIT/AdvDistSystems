@@ -18,6 +18,10 @@ with open('./config.json') as json_data_file:
     data = json.load(json_data_file)
     hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
 
+@app.route('/', methods=['GET'])
+def handle_get():
+    return "Working Perfectly"
+
 @app.route('/route', methods=['GET'])
 def handle_route_get():
     key = request.args.get('key')
