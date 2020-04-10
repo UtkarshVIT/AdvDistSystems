@@ -21,7 +21,7 @@ sudo apt-get install python-pip \Q
 #Python modules
 sudo pip install flask
 sudo pip install requests
-sudo pip --yes uninstall Werkzeug
+sudo pip uninstall --yes Werkzeug
 sudo pip install Werkzeug==0.16.0
 sudo cp -f /home/usharma2/AdvDistSystems/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
