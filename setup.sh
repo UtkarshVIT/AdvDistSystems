@@ -1,3 +1,6 @@
+# install apache
+sudo apt-get install apache2 \Q
+
 #expose public IP
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
 sudo ufw allow 80
@@ -10,7 +13,6 @@ sudo apt update
 #install apache
 sudo apt update \Q
 
-sudo apt-get install apache2 \Q
 #install wsgi and python essentials
 sudo apt-get install libapache2-mod-wsgi python-dev \Q
 sudo a2enmod wsgi \Q
