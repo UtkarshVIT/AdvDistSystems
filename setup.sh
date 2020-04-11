@@ -7,11 +7,12 @@ sudo ufw allow 80
 sudo ufw reload
 sudo apt update -y
 
+# install apache
+sudo apt-get install apache2 -y
 #install wsgi and python essentials
 sudo apt-get install libapache2-mod-wsgi python-dev -y
 sudo a2enmod wsgi -y
-# install apache
-sudo apt-get install apache2 -y
+
 #install python pip
 sudo apt-get install python-pip -y
 
