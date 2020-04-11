@@ -1,11 +1,10 @@
-# wget https://github.com/UtkarshVIT/AdvDistSystems/blob/production/setup.sh
+#wget https://github.com/UtkarshVIT/AdvDistSystems/blob/production/setup.sh
 
 #expose public IP
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
 sudo ufw allow 80
 sudo ufw allow 80
 sudo ufw reload
-
 sudo apt update -y
 
 #install wsgi and python essentials
