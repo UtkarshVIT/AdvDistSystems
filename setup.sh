@@ -14,8 +14,7 @@ sudo apt-get install apache2 -y
 #install python pip
 sudo apt-get install python-pip -y
 
-cd /var/www/html/
-git clone https://github.com/UtkarshVIT/AdvDistSystems.git
+sudo git clone https://github.com/UtkarshVIT/AdvDistSystems.git /var/www/html/
 #Python modules
 sudo pip install flask
 sudo pip install requests
