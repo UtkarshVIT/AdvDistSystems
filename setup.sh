@@ -8,7 +8,7 @@ sudo ufw reload
 sudo apt update
 
 #install apache
-sudo apt update /Q
+sudo apt update \Q
 
 sudo apt-get install apache2 \Q
 #install wsgi and python essentials
@@ -23,7 +23,7 @@ sudo pip install flask
 sudo pip install requests
 sudo pip uninstall --yes Werkzeug
 sudo pip install Werkzeug==0.16.0
-sudo cp -f /home/usharma2/AdvDistSystems/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+sudo cp -f /var/www/html/AdvDistSystems/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
 sudo service apache2 restart
 sudo tail -f /var/log/apache2/error.log
