@@ -1,4 +1,4 @@
-#
+# wget https://github.com/UtkarshVIT/AdvDistSystems/blob/production/setup.sh
 
 #expose public IP
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
@@ -17,6 +17,8 @@ sudo apt-get install apache2 -y
 sudo apt-get install python-pip -y
 
 sudo git clone https://github.com/UtkarshVIT/AdvDistSystems.git /var/www/html/AdvDistSystems
+sudo git checkout production
+sudo git pull origin production
 #Python modules
 sudo pip install flask
 sudo pip install requests
