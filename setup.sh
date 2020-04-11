@@ -1,5 +1,5 @@
 # install apache
-sudo apt-get install apache2 \Q
+#sudo apt-get install apache2 \Q
 
 #expose public IP
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
