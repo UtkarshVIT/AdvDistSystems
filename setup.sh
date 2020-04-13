@@ -22,6 +22,7 @@ sudo git clone -b production https://github.com/UtkarshVIT/AdvDistSystems.git /v
 #Python modules
 sudo pip install flask
 sudo pip install requests
+pip install python-memcached
 sudo pip uninstall --yes Werkzeug
 sudo pip install Werkzeug==0.16.0
 sudo cp -f /var/www/html/AdvDistSystems/000-default.conf /etc/apache2/sites-enabled/000-default.conf
