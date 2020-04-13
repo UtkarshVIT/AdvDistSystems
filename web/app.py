@@ -3,16 +3,15 @@ import requests
 from flask import Flask, session, request, jsonify
 import logging
 import md5
-from flask_caching import Cache
+from werkzeug.contrib.cache import MemcachedCache
 import json
 import ConsistentHashRing
 
 import sys
 
+cache = MemcachedCache(['0.0.0.0:11211'])
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
-cache = Cache(app, config={'CACHE_TYPE': 'memcachedf'})
-cache.servers = ['0.0.0.0:11211']
 #json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
 #data = json.loads(json_data_file)
 #hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
