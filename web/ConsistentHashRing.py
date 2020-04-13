@@ -45,9 +45,10 @@ class ConsistentHashRing(object):
     def add_node(self, node, key):
         """Adds a `node` to the hash ring.
         """
-        self.ring[key] = node
-        self._sorted_keys.append(key)
-        self._sorted_keys.sort()
+        if int(key) not in self._sorted_keys:
+            self.ring[key] = node
+            self._sorted_keys.append(int(key))
+            self._sorted_keys.sort()
 
     def get_node(self, string_key):
         """Given a string_key a corresponding node in the hash ring is returned

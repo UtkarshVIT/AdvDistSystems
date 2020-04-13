@@ -123,7 +123,7 @@ def add_node(key, node):
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
         url = "http://" + hash_ring.ring[_key] + "/update_ring"
-        requests.post(url = url, data = {'ip': node, 'key': key})
+        requests.post(url = url, data = {'node': node, 'key': key})
 
     return 'OK'
 
