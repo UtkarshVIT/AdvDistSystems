@@ -29,3 +29,5 @@ sudo cp -f /var/www/html/AdvDistSystems/000-default.conf /etc/apache2/sites-enab
 sudo a2enmod wsgi -y
 sudo service apache2 restart
 sudo tail -f /var/log/apache2/error.log
+
+#'{"nodes":[{"ip":"172.23.0.3:5000","key":3000},{"ip":"172.23.0.4:5000","key":6000},{"ip":"172.23.0.5:5000","key":9000}]}'

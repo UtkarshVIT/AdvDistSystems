@@ -3,19 +3,19 @@ import requests
 from flask import Flask, session, request, jsonify
 import logging
 import md5
-from werkzeug.contrib.cache import SimpleCache
+from werkzeug.contrib.cache import MemcachedCache
 import json
 import ConsistentHashRing
 
 import sys
 
-cache = SimpleCache()
+cache = MemcachedCache(['0.0.0.0:11211'])
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
+#json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
+#data = json.loads(json_data_file)
+#hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
 hash_ring = None
-json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
-data = json.loads(json_data_file)
-hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
 
 @app.route('/', methods=['GET'])
 def handle_get():
@@ -173,6 +173,13 @@ def handle_fetch_keys_get():
 def handle_hash_ring_get():
     return hash_ring.get_ring()
 
+#API to fetch the hash ring in this node
+@app.route('/hash_ring', methods=['POST'])
+def handle_hash_ring_post():
+    global hash_ring
+    data = json.loads(request.form.get('data'))
+    hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
+    return "OK"
 
 """def create_hash(key):
     #Given a string key, return a hash value.
