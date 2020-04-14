@@ -13,9 +13,10 @@ cache = MemcachedCache(['0.0.0.0:11211'])
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
 #json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
-#data = json.loads(json_data_file)
-#hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
-hash_ring = None
+json_data_file = '{"nodes":[{"ip":"152.7.98.145:80","key":3000},{"ip":"152.7.98.120:80","key":6000},{"ip":"152.7.99.107:80","key":9000}]}'
+data = json.loads(json_data_file)
+hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
+#hash_ring = None
 
 @app.route('/', methods=['GET'])
 def handle_get():

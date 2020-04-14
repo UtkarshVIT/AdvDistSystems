@@ -27,8 +27,8 @@ sudo pip uninstall --yes Werkzeug
 sudo pip install Werkzeug==0.16.0
 sudo cp -f /var/www/html/AdvDistSystems/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
-sudo a2enmod wsgi -y
+sudo a2enmod wsgi 
 sudo service apache2 restart
 sudo tail -f /var/log/apache2/error.log
 
-#'{"nodes":[{"ip":"172.23.0.3:5000","key":3000},{"ip":"172.23.0.4:5000","key":6000},{"ip":"172.23.0.5:5000","key":9000}]}'
+#'{"nodes":[{"ip":"152.7.98.145:80","key":3000},{"ip":"152.7.98.120:80","key":6000},{"ip":"152.7.99.107:80","key":9000}]}'
