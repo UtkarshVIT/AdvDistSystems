@@ -28,9 +28,8 @@ def handle_route_get():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('####NODE', hash_ring.ring, node, url, key)
+    print('RECIEVED ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
     res = requests.get(url = url, params = {'key': key}).text
-    print('hey', res)
     return res
 
 
@@ -48,11 +47,10 @@ def handle_route_post():
 @app.route('/cache', methods=['GET'])
 def handle_cache_get():
     #app.logger.info('Processing GET')
-    print('>?>>>entered here')
     key = request.args.get('key')
     val = cache.get(key)
+    print('RECIEVED CACHE LOOKUP FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
     res = val if val is not None else 'N/A'
-    print('bro', res)
     return res
 
 #this method sets the key is here
