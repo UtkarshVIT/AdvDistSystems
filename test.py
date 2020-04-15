@@ -7,7 +7,7 @@ import threading
 import time
 
 
-route_url = 'http://0.0.0.0:8080/route'
+route_url = 'http://152.46.18.240:80/route'
 scale_url = 'http://0.0.0.0:8080/add_node/7300/172.23.0.7:5000'
 new_node_url = 'http://0.0.0.0:8084/fetch_keys'
 node_ports = ["8081", "8082", "8083", "8084"] 
@@ -16,6 +16,7 @@ key_map = {"bathtub": "bathtub1", "bed":"bed1", "bee":"bee1", "finger":"finger1"
 			"gas":"gas1", "gate":"gate1", "flower":"flower1", "mist":"mist1",\
 			"saddle":"saddle1", "ship":"ship1", "shoes":"shoes1", "roof":"roof1"}
 
+'''
 with open('final-json.txt', 'r') as f:
 	d = json.load(f)
 
@@ -41,11 +42,11 @@ def measure_perform_requests(k, percent_reads):
 	for thread in threads:
 		thread.join()
 	print("k = ", k, "percent_reads = ", percent_reads, "total = ", str(time.time() - start_time), "avg = ", float(time.time() - start_time)/k)
-
+'''
 
 class TestStringMethods(unittest.TestCase):
 	#Testing insert into the system
-	@unittest.skip
+
 	def test_01_system_insert(self):
 		for key in key_map:
 			data = {"key": key, "val": key_map[key]}
@@ -55,7 +56,6 @@ class TestStringMethods(unittest.TestCase):
 			self.assertEqual( r.text, "OK")
 
 	#Testing key based lookup from the system
-	@unittest.skip
 	def test_02_system_fetch(self):
 		for key in key_map:
 			params = {"key": key}
@@ -77,6 +77,7 @@ class TestStringMethods(unittest.TestCase):
 			keys = sorted(result["ring"].keys())
 			self.assertEqual(keys, ['3000', '6000', '7300', '9000'])
 
+	@unittest.skip
 	def test_04_system_evaluate(self):
 		for i in range(1, 5):
 			measure_perform_requests(i*100, 90)

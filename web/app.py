@@ -28,7 +28,7 @@ def handle_route_get():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('RECIEVED ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
+    print('RECIEVED GET ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
     res = requests.get(url = url, params = {'key': key}).text
     return res
 
@@ -40,6 +40,7 @@ def handle_route_post():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
+    print('RECIEVED POST ROUTE REQ FOR KEY: ', key, "VAL:", val,", FORWARDING TO NODE", node)
     requests.post(url = url, data = {'key': key, 'val': val})
     return "OK"
 
@@ -49,7 +50,7 @@ def handle_cache_get():
     #app.logger.info('Processing GET')
     key = request.args.get('key')
     val = cache.get(key)
-    print('RECIEVED CACHE LOOKUP FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
+    print('RECIEVED GET CACHE REQ FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
     res = val if val is not None else 'N/A'
     return res
 
@@ -59,6 +60,7 @@ def handle_cache_post():
     #app.logger.info('Processing GET')
     key = request.form.get('key')
     val = request.form.get('val')
+    print('RECIEVED POST CACHE REQ FOR KEY:', key, ", VAL:", val)
     cache.set(key, val)
     return 'OK'
 
