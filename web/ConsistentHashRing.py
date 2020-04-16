@@ -49,6 +49,10 @@ class ConsistentHashRing(object):
         self._sorted_keys.append(key)
         self._sorted_keys.sort()
 
+    def remove_node(self, key):
+        del self.ring[key]
+        self._sorted_keys.remove(key)
+
     def get_node(self, string_key):
         """Given a string_key a corresponding node in the hash ring is returned
         along with it's position in the ring.
@@ -68,6 +72,9 @@ class ConsistentHashRing(object):
         """
         return int(hashlib.md5(key).hexdigest(),16) % 10000
 
+    def contains(self, key):
+        if key in self.ring.keys():
+            return True
 '''
     def remove_node(self, node):
         """Removes `node` from the hash ring and its replicas.
@@ -93,3 +100,9 @@ class ConsistentHashRing(object):
             for key in self._sorted_keys:
                 yield self.ring[key]
 '''
+
+if __name__ == "__main__":
+    hash_ring = ConsistentHashRing([{"ip":"127.0.0.3:5000", "key":3000}, {"ip":"127.0.0.4:5000", "key":6000}, {"ip":"127.0.0.5:5000", "key":9000}])
+    h_key = hash_ring.gen_key("my_key")
+    print(h_key)
+    

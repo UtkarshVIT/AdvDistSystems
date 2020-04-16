@@ -68,10 +68,14 @@ if __name__ == '__main__':
 # present hash ring
 @app.route('/update_ring', methods=['POST'])
 def handle_update_ring_post():
-    node = request.form.get('node')
+    node = request.form.get('ip')
     key = request.form.get('key')
-    hash_ring.add_node(node, key)
+    if hash_ring.contains(key):
+        hash_ring.remove_node(key)
+    else:
+        hash_ring.add_node(node, key)
     return "OK"
+
 
 # Request handler to fetch the key value pairs in a node
 # belonging to a specific range
@@ -118,7 +122,7 @@ def add_node(key, node):
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
     # Update own routing information
-    hash_ring.add_node(node, key)
+    # hash_ring.add_node(node, key)
     
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
@@ -156,7 +160,14 @@ def remove_node(node):
     requests.post(url = url, data = {'vals': vals, 'ring': hash_ring})
     
     # Update routing information
-    del hash_ring.ring[key]
+    # hash_ring.remove_node(key)
+
+    # Broadcast the update in routing information
+    for _key in hash_ring.ring.keys():
+        url = "https://" + hash_ring.ring[_key] + "/update_ring"
+        requests.post(url = url, data = {'ip': node, 'key': key})
+
+    return 'OK'
 
 #API to fetch the key value pairs in this node
 @app.route('/fetch_keys', methods=['GET'])
@@ -170,6 +181,11 @@ def handle_fetch_keys_get():
 def handle_hash_ring_get():
     return hash_ring.get_ring()
 
+#TestAPI to return IP address of routed node
+@app.route('/route_test', methods=['GET'])
+def test_route_destination():
+    key = request.args.get('key')
+    return hash_ring.get_node(key)
 
 """def create_hash(key):
     #Given a string key, return a hash value.
