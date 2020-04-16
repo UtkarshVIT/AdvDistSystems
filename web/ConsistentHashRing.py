@@ -1,6 +1,9 @@
 import md5
 import json
 import hashlib
+from werkzeug.contrib.cache import MemcachedCache
+
+cache = MemcachedCache(['0.0.0.0:11211'])
 
 class ConsistentHashRing(object):
     """ 
@@ -38,28 +41,42 @@ class ConsistentHashRing(object):
         self._sorted_keys = []
         for node in nodes:
             self.add_node(node["ip"], node["key"])
+        self.save_state()
 
     def get_ring(self):
         return json.dumps({"ring": self.ring, "_sorted_keys": self._sorted_keys})
 
+    def save_state(self):
+        cache.set("ring", json.dumps(self.ring))
+        cache.set("_sorted_keys", json.dumps(self._sorted_keys))
+
+    def get_state(self):
+        cache_ring = cache.get("ring")
+        if cache_ring is not None: 
+            self.ring = json.loads(cache.get("ring"))
+            self._sorted_keys = json.loads(cache.get("_sorted_keys"))
+
     def add_node(self, node, key):
         """Adds a `node` to the hash ring.
         """
-        self.ring[key] = node
-        self._sorted_keys.append(key)
-        self._sorted_keys.sort()
+        self.get_state()
+        if int(key) not in self._sorted_keys:
+            self.ring[key] = node
+            self._sorted_keys.append(int(key))
+            self._sorted_keys.sort()
+        self.save_state()
 
     def get_node(self, string_key):
         """Given a string_key a corresponding node in the hash ring is returned
         along with it's position in the ring.
         If the hash ring is empty, (`None`, `None`) is returned.
         """
-
+        self.get_state()
         h_key = self.gen_key(string_key)
         for _sorted_key in self._sorted_keys:
             if h_key <= _sorted_key:
-                return self.ring[_sorted_key]
-        return self.ring[self._sorted_keys[0]]
+                return self.ring[str(_sorted_key)]
+        return self.ring[str(self._sorted_keys[0])]
     
     def gen_key(self, key):
         """Given a string key it returns a long value,
