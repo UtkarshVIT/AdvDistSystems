@@ -64,7 +64,7 @@ class ConsistentHashRing(object):
         """
         self.get_state()
         if int(key) not in self._sorted_keys:
-            self.ring[key] = node
+            self.ring[str(key)] = node
             self._sorted_keys.append(int(key))
             self._sorted_keys.sort()
         self.save_state()

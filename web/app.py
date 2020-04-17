@@ -107,6 +107,7 @@ def add_node(key, node):
         print('hey', type(_sorted_key), type(key), type(temp))
         if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
             print('lol')
+            print(hash_ring.ring)
             target_node = hash_ring.ring[str(_sorted_key)]
             print('wow', target_node, _sorted_key, key, temp)
             break
