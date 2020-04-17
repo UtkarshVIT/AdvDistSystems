@@ -101,14 +101,18 @@ def add_node(key, node):
     # Find what node you have to copy keys from
     temp = hash_ring._sorted_keys[0]
     target_node = None
+    print(hash_ring._sorted_keys, hash_ring.ring)
 
     for _sorted_key in hash_ring._sorted_keys:
+        print('hey', type(_sorted_key), type(key), type(temp))
         if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
-            target_node = hash_ring.ring[_sorted_key]
+            print('lol')
+            target_node = hash_ring.ring[str(_sorted_key)]
+            print('wow', target_node, _sorted_key, key, temp)
             break
         else:
             temp = _sorted_key
-    
+    print('hi', temp, target_node, key, node)
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
