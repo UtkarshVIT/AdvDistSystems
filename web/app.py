@@ -105,15 +105,11 @@ def add_node(key, node):
     # Find what node you have to copy keys from
     temp = hash_ring._sorted_keys[0]
     target_node = None
-    print(hash_ring._sorted_keys, hash_ring.ring)
 
     for _sorted_key in hash_ring._sorted_keys:
         print('hey', type(_sorted_key), type(key), type(temp))
         if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
-            print('lol')
-            print(hash_ring.ring)
             target_node = hash_ring.ring[str(_sorted_key)]
-            print('wow', target_node, _sorted_key, key, temp)
             break
         else:
             temp = _sorted_key
@@ -126,50 +122,49 @@ def add_node(key, node):
     url = "http://" + node + "/bulk_update_keys"
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
-    # Update own routing information
-    # hash_ring.add_node(node, key)
+    # TODO: Copy hash ring to new node
     
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
         url = "http://" + hash_ring.ring[_key] + "/update_ring"
-        requests.post(url = url, data = {'node': node, 'key': key})
+        requests.post(url = url, data = {'ip': node, 'key': key})
 
     return 'OK'
 
-@app.route('/remove_node/<node>')
+@app.route('/remove_node/<node>', methods=['GET'])
 def remove_node(node):
     # Find the node that will receive all of the deleted node's keys
     inv_map = {v: k for k, v in hash_ring.ring.items()}
     for x in inv_map:
         print(x)
-    key = inv_map[node]
-    
+    key = int(inv_map[node])
+    print(key)   
+ 
     # Find what node you will have to copy the keys to
-    min_key = hash_ring._sorted_keys[0]
+    max_key = hash_ring._sorted_keys[0]
     new_node = None
     
     # Find the next key after the target node's
     for _sorted_key in hash_ring._sorted_keys:
-        if _sorted_key > key and key > min_key: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
-            new_node = hash_ring.ring[_sorted_key]
+        if _sorted_key > key: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
+            new_node = hash_ring.ring[str(_sorted_key)]
+            max_key = _sorted_key
             break
-        else:
-            min_key = _sorted_key
 
     # Get all the keys from the target node
-    url = "http://" + node + "/migrate/" + str(min_key) + "/" + str(key)
-    vals = requests.get(url = url).json()['vals']
+    url = "http://" + node + "/migrate/" + str(key) + "/" + str(max_key)
+    dic = requests.get(url = url).json()
 
     # Add the keys 
-    url = "http://" + new_node + "/join"
-    requests.post(url = url, data = {'vals': vals, 'ring': hash_ring})
+    url = "http://" + new_node + "/bulk_update_keys"
+    requests.post(url = url, data = {'dic': json.dumps(dic)})
     
     # Update routing information
     # hash_ring.remove_node(key)
 
     # Broadcast the update in routing information
     for _key in hash_ring.ring.keys():
-        url = "https://" + hash_ring.ring[_key] + "/update_ring"
+        url = "http://" + hash_ring.ring[_key] + "/update_ring"
         requests.post(url = url, data = {'ip': node, 'key': key})
 
     return 'OK'

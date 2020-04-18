@@ -70,8 +70,11 @@ class ConsistentHashRing(object):
         self.save_state()
 
     def remove_node(self, key):
-        del self.ring[key]
-        self._sorted_keys.remove(key)
+        print('Here I am')
+        self.get_state()
+        del self.ring[str(key)]
+        self._sorted_keys.remove(int(key))
+        self.save_state()
 
     def get_node(self, string_key):
         """Given a string_key a corresponding node in the hash ring is returned
@@ -94,7 +97,7 @@ class ConsistentHashRing(object):
         return int(hashlib.md5(key).hexdigest(),16) % 10000
 
     def contains(self, key):
-        if key in self.ring.keys():
+        if str(key) in self.ring.keys():
             return True
 '''
     def remove_node(self, node):

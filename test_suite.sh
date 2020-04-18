@@ -44,7 +44,7 @@ fi
 echo Routed to correct node!
 
 # Test: Add Node
-curl -s 0.0.0.0:8080/add_node/8900/172.23.0.7:5000
+curl -s 0.0.0.0:8080/add_node/8000/172.23.0.7:5000
 rep=$(curl 0.0.0.0:8080/route?key=my_key)
 echo $rep
 if [ "$rep" != 'my_val' ]
@@ -69,20 +69,21 @@ fi
 echo Add node successful!
 
 # Test: Remove Node
-# Add a key between 9000 and 3000 (should reside in Node 1)
+## Add a key between 9000 and 3000 (should reside in Node 1)
 curl -s --data "key=test_key&val=value2" 0.0.0.0:8080/route
-curl -s --data "key=9000" 0.0.0.0:8080/remove_node
+curl -s 0.0.0.0:8080/remove_node/172.23.0.7:5000
 rep=$(curl 0.0.0.0:8080/route?key=test_key)
 echo $rep
-if [ "$rep" != 'test_key' ]
+if [ "$rep" != 'value2' ]
 then
     echo TEST_FAILURE: Value returned is not correct
     sudo docker-compose down
     exit 1
 fi
+
 rep=$(curl 0.0.0.0:8080/route_test?key=my_key)
 echo $rep
-if [ "$rep" != '172.23.0.1:5000' ]
+if [ "$rep" != '172.23.0.5:5000' ]
 then
     echo TEST FAILURE: Value returned is not correct
     sudo docker-compose down
