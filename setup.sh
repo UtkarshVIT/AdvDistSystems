@@ -1,4 +1,4 @@
-#https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/production/setup.sh
+#sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/production/setup.sh
 
 #expose public IP
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
@@ -32,7 +32,7 @@ sudo a2enmod wsgi
 sudo service apache2 restart
 
 #Setup Memcache on the server
-apt-get install memcached libmemcached-tools -y
+sudo apt-get install memcached libmemcached-tools -y
 sudo cp /var/www/html/AdvDistSystems/memcached.conf /etc/memcached.conf
 
 #Allow the port
