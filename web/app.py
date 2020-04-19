@@ -72,10 +72,14 @@ if __name__ == '__main__':
 # present hash ring
 @app.route('/update_ring', methods=['POST'])
 def handle_update_ring_post():
-    node = request.form.get('node')
+    node = request.form.get('ip')
     key = request.form.get('key')
-    hash_ring.add_node(node, key)
+    if hash_ring.contains(key):
+        hash_ring.remove_node(key)
+    else:
+        hash_ring.add_node(node, key)
     return "OK"
+
 
 # Request handler to fetch the key value pairs in a node
 # belonging to a specific range
@@ -107,12 +111,13 @@ def add_node(key, node):
     target_node = None
 
     for _sorted_key in hash_ring._sorted_keys:
+        print('hey', type(_sorted_key), type(key), type(temp))
         if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
-            target_node = hash_ring.ring[_sorted_key]
+            target_node = hash_ring.ring[str(_sorted_key)]
             break
         else:
             temp = _sorted_key
-    
+    print('hi', temp, target_node, key, node)
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
@@ -121,8 +126,7 @@ def add_node(key, node):
     url = "http://" + node + "/bulk_update_keys"
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
-    # Update own routing information
-    hash_ring.add_node(node, key)
+    # TODO: Copy hash ring to new node
     
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
@@ -131,36 +135,43 @@ def add_node(key, node):
 
     return 'OK'
 
-@app.route('/remove_node/<node>')
+@app.route('/remove_node/<node>', methods=['GET'])
 def remove_node(node):
     # Find the node that will receive all of the deleted node's keys
     inv_map = {v: k for k, v in hash_ring.ring.items()}
     for x in inv_map:
         print(x)
-    key = inv_map[node]
-    
+    key = int(inv_map[node])
+    print(key)   
+ 
     # Find what node you will have to copy the keys to
-    min_key = hash_ring._sorted_keys[0]
+    max_key = hash_ring._sorted_keys[0]
     new_node = None
     
     # Find the next key after the target node's
     for _sorted_key in hash_ring._sorted_keys:
-        if _sorted_key > key and key > min_key: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
-            new_node = hash_ring.ring[_sorted_key]
+        if _sorted_key > key: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
+            new_node = hash_ring.ring[str(_sorted_key)]
+            max_key = _sorted_key
             break
-        else:
-            min_key = _sorted_key
 
     # Get all the keys from the target node
-    url = "http://" + node + "/migrate/" + str(min_key) + "/" + str(key)
-    vals = requests.get(url = url).json()['vals']
+    url = "http://" + node + "/migrate/" + str(key) + "/" + str(max_key)
+    dic = requests.get(url = url).json()
 
     # Add the keys 
-    url = "http://" + new_node + "/join"
-    requests.post(url = url, data = {'vals': vals, 'ring': hash_ring})
+    url = "http://" + new_node + "/bulk_update_keys"
+    requests.post(url = url, data = {'dic': json.dumps(dic)})
     
     # Update routing information
-    del hash_ring.ring[key]
+    # hash_ring.remove_node(key)
+
+    # Broadcast the update in routing information
+    for _key in hash_ring.ring.keys():
+        url = "http://" + hash_ring.ring[_key] + "/update_ring"
+        requests.post(url = url, data = {'ip': node, 'key': key})
+
+    return 'OK'
 
 #API to fetch the key value pairs in this node
 @app.route('/fetch_keys', methods=['GET'])
@@ -181,6 +192,11 @@ def handle_hash_ring_post():
     data = json.loads(request.form.get('data'))
     hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
     return "OK"
+#TestAPI to return IP address of routed node
+@app.route('/route_test', methods=['GET'])
+def test_route_destination():
+    key = request.args.get('key')
+    return hash_ring.get_node(key)
 
 """def create_hash(key):
     #Given a string key, return a hash value.

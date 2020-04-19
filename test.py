@@ -2,7 +2,7 @@ import requests
 import unittest
 import ast
 import json
-from random_word import RandomWords
+from random_words import RandomWords
 import threading
 import time
 

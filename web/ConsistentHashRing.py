@@ -5,6 +5,7 @@ from werkzeug.contrib.cache import MemcachedCache
 
 cache = MemcachedCache(['0.0.0.0:11211'])
 
+
 class ConsistentHashRing(object):
     """ 
     This is a class for manages a hash ring on each node.
@@ -43,7 +44,20 @@ class ConsistentHashRing(object):
             self.add_node(node["ip"], node["key"])
         self.save_state()
 
+    def save_state(self):
+        cache.set("ring", json.dumps(self.ring))
+        cache.set("_sorted_keys", json.dumps(self._sorted_keys))
+
+    def get_state(self):
+        print('yoyo1', cache.get("ring"))
+        print('yoyo2', cache.get("_sorted_keys"))
+        cache_ring = cache.get("ring")
+        if cache_ring is not None: 
+            self.ring = json.loads(cache.get("ring"))
+            self._sorted_keys = json.loads(cache.get("_sorted_keys"))
+
     def get_ring(self):
+        self.get_state()
         return json.dumps({"ring": self.ring, "_sorted_keys": self._sorted_keys})
 
     def save_state(self):
@@ -61,9 +75,16 @@ class ConsistentHashRing(object):
         """
         self.get_state()
         if int(key) not in self._sorted_keys:
-            self.ring[key] = node
+            self.ring[str(key)] = node
             self._sorted_keys.append(int(key))
             self._sorted_keys.sort()
+        self.save_state()
+
+    def remove_node(self, key):
+        print('Here I am')
+        self.get_state()
+        del self.ring[str(key)]
+        self._sorted_keys.remove(int(key))
         self.save_state()
 
     def get_node(self, string_key):
@@ -85,6 +106,9 @@ class ConsistentHashRing(object):
         """
         return int(hashlib.md5(key).hexdigest(),16) % 10000
 
+    def contains(self, key):
+        if str(key) in self.ring.keys():
+            return True
 '''
     def remove_node(self, node):
         """Removes `node` from the hash ring and its replicas.
@@ -110,3 +134,9 @@ class ConsistentHashRing(object):
             for key in self._sorted_keys:
                 yield self.ring[key]
 '''
+
+if __name__ == "__main__":
+    hash_ring = ConsistentHashRing([{"ip":"127.0.0.3:5000", "key":3000}, {"ip":"127.0.0.4:5000", "key":6000}, {"ip":"127.0.0.5:5000", "key":9000}])
+    h_key = hash_ring.gen_key("my_key")
+    print(h_key)
+    
