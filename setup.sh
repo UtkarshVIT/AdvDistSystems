@@ -17,6 +17,7 @@ sudo a2enmod wsgi -y
 #install python pip
 sudo apt-get install python-pip -y
 
+sudo rm -rf /var/www/html/AdvDistSystems
 sudo git clone -b production https://github.com/UtkarshVIT/AdvDistSystems.git /var/www/html/AdvDistSystems
 
 #Python modules
