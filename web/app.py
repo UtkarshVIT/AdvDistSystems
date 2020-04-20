@@ -126,7 +126,8 @@ def add_node(key, node):
     url = "http://" + node + "/bulk_update_keys"
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
-    # TODO: Copy hash ring to new node
+    # Update own routing information
+    hash_ring.add_node(node, key)
     
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
