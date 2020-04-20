@@ -9,7 +9,7 @@ import ConsistentHashRing
 
 import sys
 
-cache = MemcachedCache(['0.0.0.0:11211'])
+cache = MemcachedCache(['0.0.0.0:11211'], default_timeout=0)
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
 #json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
