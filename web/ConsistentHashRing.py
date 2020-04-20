@@ -60,16 +60,6 @@ class ConsistentHashRing(object):
         self.get_state()
         return json.dumps({"ring": self.ring, "_sorted_keys": self._sorted_keys})
 
-    def save_state(self):
-        cache.set("ring", json.dumps(self.ring))
-        cache.set("_sorted_keys", json.dumps(self._sorted_keys))
-
-    def get_state(self):
-        cache_ring = cache.get("ring")
-        if cache_ring is not None: 
-            self.ring = json.loads(cache.get("ring"))
-            self._sorted_keys = json.loads(cache.get("_sorted_keys"))
-
     def add_node(self, node, key):
         """Adds a `node` to the hash ring.
         """
