@@ -47,14 +47,15 @@ class ConsistentHashRing(object):
     def save_state(self):
         cache.set("ring", json.dumps(self.ring))
         cache.set("_sorted_keys", json.dumps(self._sorted_keys))
+        print("state set:", cache.get("ring"), cache.get("_sorted_keys"))
 
     def get_state(self):
-        print('yoyo1', cache.get("ring"))
-        print('yoyo2', cache.get("_sorted_keys"))
+        print('from cache', cache.get("ring"), cache.get("_sorted_keys"))
         cache_ring = cache.get("ring")
         if cache_ring is not None: 
             self.ring = json.loads(cache.get("ring"))
             self._sorted_keys = json.loads(cache.get("_sorted_keys"))
+        print('state setting', self.ring, self._sorted_keys)
 
     def get_ring(self):
         self.get_state()

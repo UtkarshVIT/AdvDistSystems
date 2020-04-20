@@ -192,6 +192,7 @@ def handle_hash_ring_post():
     global hash_ring
     data = json.loads(request.form.get('data'))
     hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
+    print("Recived data", json.loads(request.form.get('data')))
     return "OK"
 #TestAPI to return IP address of routed node
 @app.route('/route_test', methods=['GET'])
