@@ -12,15 +12,11 @@ import sys
 cache = MemcachedCache(['0.0.0.0:11211'], default_timeout=0)
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
-#json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
-# json_data_file = '{"nodes":[{"ip":"152.46.18.69:80","key":3000},{"ip":"152.46.17.205:80","key":6000},{"ip":"152.46.19.28:80","key":9000}]}'
-# data = json.loads(json_data_file)
-# hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
 hash_ring = ConsistentHashRing.ConsistentHashRing()
 
 @app.route('/', methods=['GET'])
 def handle_get():
-    return "Working Perfectly"
+    return "DYNAMOC MOCK: NODE WITH FLASK RUNNING !"
 
 @app.route('/route', methods=['GET'])
 def handle_route_get():
@@ -28,7 +24,7 @@ def handle_route_get():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('RECIEVED GET ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
+    print('DYNAMOC MOCK: RECIEVED GET ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
     res = requests.get(url = url, params = {'key': key}).text
     return res
 
@@ -40,27 +36,25 @@ def handle_route_post():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('RECIEVED POST ROUTE REQ FOR KEY: ', key, "VAL:", val,", FORWARDING TO NODE", node)
+    print('DYNAMOC MOCK: RECIEVED POST ROUTE REQ FOR KEY: ', key, "VAL:", val,", FORWARDING TO NODE", node)
     requests.post(url = url, data = {'key': key, 'val': val})
     return "OK"
 
 #this method knows the key is here
 @app.route('/cache', methods=['GET'])
 def handle_cache_get():
-    #app.logger.info('Processing GET')
     key = request.args.get('key')
     val = cache.get(key)
-    print('RECIEVED GET CACHE REQ FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
+    print('DYNAMOC MOCK: RECIEVED GET CACHE REQ FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
     res = val if val is not None else 'N/A'
     return res
 
 #this method sets the key is here
 @app.route('/cache', methods=['POST'])
 def handle_cache_post():
-    #app.logger.info('Processing GET')
     key = request.form.get('key')
     val = request.form.get('val')
-    print('RECIEVED POST CACHE REQ FOR KEY:', key, ", VAL:", val)
+    print('DYNAMOC MOCK: RECIEVED POST CACHE REQ FOR KEY:', key, ", VAL:", val)
     cache.set(key, val)
     return 'OK'
 
@@ -111,13 +105,12 @@ def add_node(key, node):
     target_node = None
 
     for _sorted_key in hash_ring._sorted_keys:
-        print('hey', type(_sorted_key), type(key), type(temp))
         if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
             target_node = hash_ring.ring[str(_sorted_key)]
             break
         else:
             temp = _sorted_key
-    print('RECIEVED ADD NODE', temp, target_node, key, node)
+    print('DYNAMOC MOCK: RECIEVED ADD NODE', node, "key", key)
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
@@ -192,7 +185,7 @@ def handle_hash_ring_post():
     global hash_ring
     data = json.loads(request.form.get('data'))
     hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
-    print("RECIEVED POST", json.loads(request.form.get('data')))
+    print("DYNAMOC MOCK: RECIEVED POST UPDATE HASH RING", json.loads(request.form.get('data')))
     return "OK"
 #TestAPI to return IP address of routed node
 @app.route('/route_test', methods=['GET'])

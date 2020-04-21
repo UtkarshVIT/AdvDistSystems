@@ -1,6 +1,6 @@
 #sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/production/setup.sh
 
-#expose public IP
+#expose public port for app
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
 sudo ufw allow 80
 sudo ufw allow 80
@@ -18,7 +18,7 @@ sudo a2enmod wsgi -y
 sudo apt-get install memcached libmemcached-tools -y
 sudo cp /var/www/html/AdvDistSystems/memcached.conf /etc/memcached.conf
 
-#Allow the port
+#expose the port for cache
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 11211 -j ACCEPT
 sudo ufw allow 11211
 sudo ufw allow 11211
@@ -30,6 +30,7 @@ sudo systemctl restart memcached
 #install python pip
 sudo apt-get install python-pip -y
 
+#Install the app at desired location
 sudo rm -rf /var/www/html/AdvDistSystems
 sudo git clone -b production https://github.com/UtkarshVIT/AdvDistSystems.git /var/www/html/AdvDistSystems
 
@@ -46,6 +47,4 @@ sudo a2enmod wsgi
 sudo service apache2 restart
 
 #Append to the logs of the web server
-sudo tail -f /var/log/apache2/error.log
-
-#'{"nodes":[{"ip":"152.7.98.145:80","key":3000},{"ip":"152.7.98.120:80","key":6000},{"ip":"152.7.99.107:80","key":9000}]}'
+sudo tail -f /var/log/apache2/error.log | grep DYNAMOC MOCK
