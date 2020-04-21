@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 # json_data_file = '{"nodes":[{"ip":"152.46.18.69:80","key":3000},{"ip":"152.46.17.205:80","key":6000},{"ip":"152.46.19.28:80","key":9000}]}'
 # data = json.loads(json_data_file)
 # hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
-hash_ring = None
+hash_ring = ConsistentHashRing.ConsistentHashRing()
 
 @app.route('/', methods=['GET'])
 def handle_get():
