@@ -13,10 +13,10 @@ cache = MemcachedCache(['0.0.0.0:11211'], default_timeout=0)
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
 #json_data_file = '{ "nodes": [ {"ip":"172.23.0.3:5000", "key": 3000 }, {"ip":"172.23.0.4:5000", "key": 6000 }, { "ip":"172.23.0.5:5000", "key": 9000 } ] }'
-json_data_file = '{"nodes":[{"ip":"152.46.18.69:80","key":3000},{"ip":"152.46.17.205:80","key":6000},{"ip":"152.46.19.28:80","key":9000}]}'
-data = json.loads(json_data_file)
-hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
-#hash_ring = None
+# json_data_file = '{"nodes":[{"ip":"152.46.18.69:80","key":3000},{"ip":"152.46.17.205:80","key":6000},{"ip":"152.46.19.28:80","key":9000}]}'
+# data = json.loads(json_data_file)
+# hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
+hash_ring = None
 
 @app.route('/', methods=['GET'])
 def handle_get():
@@ -117,7 +117,7 @@ def add_node(key, node):
             break
         else:
             temp = _sorted_key
-    print('hi', temp, target_node, key, node)
+    print('RECIEVED ADD NODE', temp, target_node, key, node)
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()

@@ -50,9 +50,10 @@ class ConsistentHashRing(object):
         print("CACHE SET:", cache.get("ring"), cache.get("_sorted_keys"))
 
     def get_state(self):
-        print('FROM CACHE', cache.get("ring"), cache.get("_sorted_keys"))
-        self.ring = json.loads(cache.get("ring"))
-        self._sorted_keys = json.loads(cache.get("_sorted_keys"))
+        print('FROM CACHE RING STATE', cache.get("ring"), cache.get("_sorted_keys"))
+        if cache.get("ring") is not None:
+            self.ring = json.loads(cache.get("ring"))
+            self._sorted_keys = json.loads(cache.get("_sorted_keys"))
         print('NEW STATE', self.ring, self._sorted_keys)
 
     def get_ring(self):
@@ -123,9 +124,3 @@ class ConsistentHashRing(object):
             for key in self._sorted_keys:
                 yield self.ring[key]
 '''
-
-if __name__ == "__main__":
-    hash_ring = ConsistentHashRing([{"ip":"127.0.0.3:5000", "key":3000}, {"ip":"127.0.0.4:5000", "key":6000}, {"ip":"127.0.0.5:5000", "key":9000}])
-    h_key = hash_ring.gen_key("my_key")
-    print(h_key)
-    
