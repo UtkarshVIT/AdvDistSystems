@@ -43,7 +43,7 @@ def handle_route_post():
 def handle_cache_get():
     key = request.args.get('key')
     key_hash = hash_ring.gen_key(key)
-    val = cache.get(key_hash)
+    val = str(cache.get(key_hash))
     print('DYNAMO_MOCK: RECIEVED GET CACHE REQ FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
     res = val if val is not None else 'N/A'
     return res
@@ -54,7 +54,7 @@ def handle_cache_post():
     key = request.form.get('key')
     val = request.form.get('val')
     print('DYNAMO_MOCK: RECIEVED POST CACHE REQ FOR KEY:', key, ", VAL:", val)
-    key = hash_ring.gen_key(key)
+    key = str(hash_ring.gen_key(key))
     cache.set(key, val)
     return 'OK'
 
