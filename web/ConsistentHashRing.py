@@ -29,7 +29,7 @@ class ConsistentHashRing(object):
     _sorted_keys: [3000, 6000, 9000]
     """
 
-    def __init__(self, nodes):
+    def __init__(self, nodes=None):
         """ 
         The constructor for ConsistentHashRing class. The class attributes are initialised using the node parameter
         of the constructor
@@ -40,9 +40,10 @@ class ConsistentHashRing(object):
 
         self.ring = dict()
         self._sorted_keys = []
-        for node in nodes:
-            self.add_node(node["ip"], node["key"])
-        self.save_state()
+        if nodes!=None:
+            for node in nodes:
+                self.add_node(node["ip"], node["key"])
+            self.save_state()
 
     def save_state(self):
         cache.set("ring", json.dumps(self.ring))
