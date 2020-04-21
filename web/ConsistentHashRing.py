@@ -51,7 +51,6 @@ class ConsistentHashRing(object):
 
     def get_state(self):
         print('FROM CACHE', cache.get("ring"), cache.get("_sorted_keys"))
-        cache_ring = cache.get("ring")
         self.ring = json.loads(cache.get("ring"))
         self._sorted_keys = json.loads(cache.get("_sorted_keys"))
         print('NEW STATE', self.ring, self._sorted_keys)
