@@ -16,7 +16,7 @@ hash_ring = ConsistentHashRing.ConsistentHashRing()
 
 @app.route('/', methods=['GET'])
 def handle_get():
-    return "DYNAMOC MOCK: NODE WITH FLASK RUNNING !"
+    return "DYNAMO_MOCK: NODE WITH FLASK RUNNING !"
 
 @app.route('/route', methods=['GET'])
 def handle_route_get():
@@ -24,7 +24,7 @@ def handle_route_get():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('DYNAMOC MOCK: RECIEVED GET ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
+    print('DYNAMO_MOCK: RECIEVED GET ROUTE REQ FOR KEY: ', key, ", FORWARDING TO NODE", node)
     res = requests.get(url = url, params = {'key': key}).text
     return res
 
@@ -36,7 +36,7 @@ def handle_route_post():
     node = hash_ring.get_node(key)
     key = hash_ring.gen_key(key)
     url = "http://" + node + "/cache"
-    print('DYNAMOC MOCK: RECIEVED POST ROUTE REQ FOR KEY: ', key, "VAL:", val,", FORWARDING TO NODE", node)
+    print('DYNAMO_MOCK: RECIEVED POST ROUTE REQ FOR KEY: ', key, "VAL:", val,", FORWARDING TO NODE", node)
     requests.post(url = url, data = {'key': key, 'val': val})
     return "OK"
 
@@ -45,7 +45,7 @@ def handle_route_post():
 def handle_cache_get():
     key = request.args.get('key')
     val = cache.get(key)
-    print('DYNAMOC MOCK: RECIEVED GET CACHE REQ FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
+    print('DYNAMO_MOCK: RECIEVED GET CACHE REQ FOR KEY:', key, ", VAL FOUND IN CACHE:", val)
     res = val if val is not None else 'N/A'
     return res
 
@@ -54,7 +54,7 @@ def handle_cache_get():
 def handle_cache_post():
     key = request.form.get('key')
     val = request.form.get('val')
-    print('DYNAMOC MOCK: RECIEVED POST CACHE REQ FOR KEY:', key, ", VAL:", val)
+    print('DYNAMO_MOCK: RECIEVED POST CACHE REQ FOR KEY:', key, ", VAL:", val)
     cache.set(key, val)
     return 'OK'
 
@@ -110,7 +110,7 @@ def add_node(key, node):
             break
         else:
             temp = _sorted_key
-    print('DYNAMOC MOCK: RECIEVED ADD NODE', node, "key", key)
+    print('DYNAMO_MOCK: RECIEVED ADD NODE', node, "key", key)
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
@@ -185,7 +185,7 @@ def handle_hash_ring_post():
     global hash_ring
     data = json.loads(request.form.get('data'))
     hash_ring = ConsistentHashRing.ConsistentHashRing(data["nodes"])
-    print("DYNAMOC MOCK: RECIEVED POST UPDATE HASH RING", json.loads(request.form.get('data')))
+    print("DYNAMO_MOCK: RECIEVED POST UPDATE HASH RING", json.loads(request.form.get('data')))
     return "OK"
 #TestAPI to return IP address of routed node
 @app.route('/route_test', methods=['GET'])
