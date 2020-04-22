@@ -198,6 +198,11 @@ def test_route_destination():
     key = request.args.get('key')
     return hash_ring.get_node(key)
 
+@app.route('/clear_cache', methods=['GET'])
+def clear_cache():
+    cache.clear()
+    return "OK"
+
 """def create_hash(key):
     #Given a string key, return a hash value.
     return long(md5.md5(key).hexdigest(), 16)

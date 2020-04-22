@@ -6,9 +6,16 @@ import json
 import threading
 import time
 
-lb_addr = "152.46.19.77:80"
-standby_addr = '152.7.99.108:80'
-nodes = ["152.7.99.216:80", "152.7.99.95:80", "152.7.99.108:80"]
+lb_addr = "18.190.25.30:80"
+var1 = "3.21.171.240:80"
+var2 = "3.21.171.240:80"
+var3 = "3.15.191.148:80"
+
+standby_addr = var3
+removenode_addr = var2
+migrated_to_addr = var1
+nodes = [var1, var2, var3]
+post_removal = [var1, var3]
 
 key_map = {"bathtub": "bathtub1", "bed":"bed1", "bee":"bee1", "finger":"finger1", \
 			"gas":"gas1", "gate":"gate1", "flower":"flower1", "mist":"mist1",\
@@ -63,7 +70,7 @@ class TestStringMethods(unittest.TestCase):
 			self.assertEqual( r.text, key_map[key])
 
 	#Testing scale and broadcast
-	#@unittest.skip("skipiing this")
+	@unittest.skip("skipiing this")
 	def test_03_system_scale_up(self):
 		route_url = "http://" + lb_addr + "/add_node/5000/" + standby_addr
 		r = requests.get(url = route_url)
@@ -79,6 +86,23 @@ class TestStringMethods(unittest.TestCase):
 			result = json.loads(requests.get(url = url).text)
 			keys = sorted(result["ring"].keys())
 			self.assertEqual(keys, ['3000', '5000', '8000'])
+
+	@unittest.skip("skipiing this")
+	def test_04_system_scale_down(self):
+		route_url = "http://" + lb_addr + "/remove_node/" + removenode_addr
+		r = requests.get(url = route_url)
+		self.assertEqual(r.text, "OK")
+		
+		route_url = "http://" + migrated_to_addr + "/fetch_keys"
+		r = requests.get(url = route_url)
+		result = ast.literal_eval(r.text)
+		result = sorted([obj[0] for obj in result])
+		self.assertEqual(sorted(result), sorted(["8016","2184","9381","8155","6051","6823","8700","6952","9235"]))
+		for node in nodes:
+			url = "http://" + node + '/hash_ring'
+			result = json.loads(requests.get(url = url).text)
+			keys = sorted(result["ring"].keys())
+			self.assertEqual(keys, ['3000', '5000'])
 
 	# @unittest.skip
 	# def test_04_system_evaluate(self):
