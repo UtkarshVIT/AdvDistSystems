@@ -155,9 +155,10 @@ def remove_node(node):
             break
 
     # Get all the keys from the target node
-    url = "http://" + node + "/migrate/" + str(key) + "/" + str(10000)
+    url = "http://" + node + "/migrate/" + str(0) + "/" + str(10000)
     dic = requests.get(url = url).json()
-
+    print("wow", dic)
+    print("wow", node)
     # Add the keys 
     url = "http://" + new_node + "/bulk_update_keys"
     requests.post(url = url, data = {'dic': json.dumps(dic)})
