@@ -121,7 +121,7 @@ def add_node(key, node):
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
     # Update own routing information
-    # hash_ring.add_node(node, key)
+    hash_ring.add_node(node, key)
     
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
