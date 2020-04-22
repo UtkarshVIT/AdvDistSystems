@@ -101,6 +101,7 @@ def bulk_update_keys():
 @app.route('/add_node/<int:key>/<node>')
 def add_node(key, node):
     # Find what node you have to copy keys from
+    hash_ring.get_state()
     temp = hash_ring._sorted_keys[0]
     target_node = None
 
@@ -132,6 +133,7 @@ def add_node(key, node):
 
 @app.route('/remove_node/<node>', methods=['GET'])
 def remove_node(node):
+    hash_ring.get_state()
     # Find the node that will receive all of the deleted node's keys
     inv_map = {v: k for k, v in hash_ring.ring.items()}
     for x in inv_map:
@@ -141,7 +143,7 @@ def remove_node(node):
  
     # Find what node you will have to copy the keys to
     max_key = hash_ring._sorted_keys[0]
-    new_node = None
+    new_node = hash_ring.ring[str(max_key)]
     
     # Find the next key after the target node's
     for _sorted_key in hash_ring._sorted_keys:
@@ -151,7 +153,7 @@ def remove_node(node):
             break
 
     # Get all the keys from the target node
-    url = "http://" + node + "/migrate/" + str(key) + "/" + str(max_key)
+    url = "http://" + node + "/migrate/" + str(key) + "/" + str(10000)
     dic = requests.get(url = url).json()
 
     # Add the keys 
