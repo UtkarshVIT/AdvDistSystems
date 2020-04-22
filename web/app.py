@@ -68,12 +68,12 @@ if __name__ == '__main__':
 def handle_update_ring_post():
     node = request.form.get('ip')
     key = request.form.get('key')
-    if hash_ring.contains(key):
+    task = request.form.get('task')
+    if task == "remove":
         hash_ring.remove_node(key)
     else:
         hash_ring.add_node(node, key)
     return "OK"
-
 
 # Request handler to fetch the key value pairs in a node
 # belonging to a specific range
@@ -111,6 +111,7 @@ def add_node(key, node):
         else:
             temp = _sorted_key
     print('DYNAMO_MOCK: RECIEVED ADD NODE', node, "key", key)
+
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
@@ -120,12 +121,12 @@ def add_node(key, node):
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
     # Update own routing information
-    hash_ring.add_node(node, key)
+    # hash_ring.add_node(node, key)
     
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
         url = "http://" + hash_ring.ring[_key] + "/update_ring"
-        requests.post(url = url, data = {'ip': node, 'key': key})
+        requests.post(url = url, data = {'ip': node, 'key': key, 'task': 'add'})
 
     return 'OK'
 
@@ -163,7 +164,7 @@ def remove_node(node):
     # Broadcast the update in routing information
     for _key in hash_ring.ring.keys():
         url = "http://" + hash_ring.ring[_key] + "/update_ring"
-        requests.post(url = url, data = {'ip': node, 'key': key})
+        requests.post(url = url, data = {'ip': node, 'key': key, "task": 'remove'})
 
     return 'OK'
 
