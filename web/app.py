@@ -84,6 +84,8 @@ def migrate_keys(key_min, key_max):
     ls = [str(integer) for integer in range(int(key_min), int(key_max))]
     d = cache.get_dict(*ls)
     all_objects = [(key, d[key]) for key in d.keys() if d[key] is not None]
+    all_keys = [key for key in d.keys() if d[key] is not None]
+    cache.delete_many(*all_keys)
     resp = {}
     for obj in all_objects:
         resp[obj[0]] = obj[1]
