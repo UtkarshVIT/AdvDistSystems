@@ -104,11 +104,12 @@ def bulk_update_keys():
 def add_node(key, node):
     # Find what node you have to copy keys from
     hash_ring.get_state()
-    temp = hash_ring._sorted_keys[0]
-    target_node = None
+    temp = 0
+    min_key = hash_ring._sorted_keys[0]
+    target_node = hash_ring.ring[str(min_key)]
 
     for _sorted_key in hash_ring._sorted_keys:
-        if _sorted_key > key and key > temp: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
+        if _sorted_key > key: # BUG: Does not handle case where it is between the first and last node (if it should be between 9000 and 3000, how do we handle this case? probably modulo)
             target_node = hash_ring.ring[str(_sorted_key)]
             break
         else:
@@ -118,6 +119,12 @@ def add_node(key, node):
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
+
+    if key < hash_ring._sorted_keys[0]:
+        max_key = hash_ring._sorted_keys[-1]
+        url = "http://" + target_node + "/migrate/" + str(max_key) + "/" + str(10000) 
+        dic_addnl_keys = requests.get(url = url).json()
+        dic.udpate(dic_addnl_keys)
 
     # Send the fetched key-value pairs to the new node
     url = "http://" + node + "/bulk_update_keys"
