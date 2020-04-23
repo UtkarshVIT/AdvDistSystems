@@ -66,6 +66,7 @@ if __name__ == '__main__':
 # present hash ring
 @app.route('/update_ring', methods=['POST'])
 def handle_update_ring_post():
+    print('DYNAMO_MOCK: RECIEVED UPDATE ROUTING INFO')
     node = request.form.get('ip')
     key = request.form.get('key')
     task = request.form.get('task')
@@ -115,24 +116,27 @@ def add_node(key, node):
         else:
             temp = _sorted_key
     print('DYNAMO_MOCK: RECIEVED ADD NODE', node, "key", key)
+    print('DYNAMO_MOCK: FETCHING KEYS FROM', target_node)
 
     # Fetch to get the keys value paris from that node in dict format
     url = "http://" + target_node + "/migrate/" + str(temp) + "/" + str(key) 
     dic = requests.get(url = url).json()
+    
+    
 
     if key < hash_ring._sorted_keys[0]:
         max_key = hash_ring._sorted_keys[-1]
         url = "http://" + target_node + "/migrate/" + str(max_key) + "/" + str(10000) 
         dic_addnl_keys = requests.get(url = url).json()
         dic.update(dic_addnl_keys)
-
+    print('DYNAMO_MOCK: NUM OF KEYS FETCHED', len(dic))
     # Send the fetched key-value pairs to the new node
     url = "http://" + node + "/bulk_update_keys"
     requests.post(url = url, data = {'dic': json.dumps(dic)})
 
     # Update own routing information
     hash_ring.add_node(node, key)
-    
+    print('DYNAMO_MOCK: SENDING UPDATE ROUTING INFO BROADCAST')
     #Broadcast the update in routing information
     for _key in hash_ring.ring.keys(): 
         url = "http://" + hash_ring.ring[_key] + "/update_ring"
@@ -143,6 +147,7 @@ def add_node(key, node):
 @app.route('/remove_node/<node>', methods=['GET'])
 def remove_node(node):
     hash_ring.get_state()
+    print('DYNAMO_MOCK: RECIEVED REMOVE NODE', node)
     # Find the node that will receive all of the deleted node's keys
     inv_map = {v: k for k, v in hash_ring.ring.items()}
     for x in inv_map:
@@ -164,7 +169,8 @@ def remove_node(node):
     # Get all the keys from the target node
     url = "http://" + node + "/migrate/" + str(0) + "/" + str(10000)
     dic = requests.get(url = url).json()
-
+    print('DYNAMO_MOCK: NUM OF KEYS FETCHED', len(dic))
+    print('DYNAMO_MOCK: SENDING KEYS TO', new_node)
     # Add the keys 
     url = "http://" + new_node + "/bulk_update_keys"
     requests.post(url = url, data = {'dic': json.dumps(dic)})
@@ -173,6 +179,7 @@ def remove_node(node):
     # hash_ring.remove_node(key)
 
     # Broadcast the update in routing information
+    print('DYNAMO_MOCK: SENDING UPDATE ROUTING INFO BROADCAST')
     for _key in hash_ring.ring.keys():
         url = "http://" + hash_ring.ring[_key] + "/update_ring"
         requests.post(url = url, data = {'ip': node, 'key': key, "task": 'remove'})

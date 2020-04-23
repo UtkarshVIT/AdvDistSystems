@@ -84,30 +84,5 @@ class TestScaling(unittest.TestCase):
 			keys = sorted(result["ring"].keys())
 			self.assertEqual(keys, ['3000', '5000'])
 
-	# @unittest.skip
-	# def test_04_system_evaluate(self):
-	# 	for i in range(1, 5):
-	# 		measure_perform_requests(i*100, 90)
-
-	# 	for i in range(1, 5):
-	# 		measure_perform_requests(i*100, 10)
-
-	# 	for i in range(1, 5):
-	# 		measure_perform_requests(i*100, 50)
-	# 	self.assertEqual(True, True)
-
-'''
-
-
-
-
-
-
-
-
-
-
-'''
-
 if __name__ == '__main__':
 	unittest.main()
