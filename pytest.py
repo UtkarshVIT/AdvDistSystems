@@ -31,6 +31,12 @@ class TestScaling(unittest.TestCase):
 			r = requests.post(url = route_url, data = data)
 			self.assertEqual( r.status_code, 200)
 			self.assertEqual( r.text, "OK")
+		test_keys = {'finger':var2, 'gate':var2, 'roof':var1, 'ship':var1}
+		for test_key in test_keys:
+			params = {"key": test_key}
+			route_url = "http://" + lb_addr + "/route_test"
+			result = requests.get(url = route_url, params = params).text
+			self.assertEqual(result, test_keys[test_key])
 
 	#Testing key based lookup from the system
 	#@unittest.skip("skipiing this")
@@ -91,10 +97,7 @@ class TestScaling(unittest.TestCase):
 	# 	self.assertEqual(True, True)
 
 '''
-'roof' 2184     'gate' 6051    'mist' 8155
-'bed' 4019      'finger' 6823  'flower' 8700
-'bathtub' 4324  'gas' 6952     'shoes' 9235
-'bee' 4603      'saddle' 8016  'ship' 9381
+
 
 
 
