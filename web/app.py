@@ -124,7 +124,7 @@ def add_node(key, node):
         max_key = hash_ring._sorted_keys[-1]
         url = "http://" + target_node + "/migrate/" + str(max_key) + "/" + str(10000) 
         dic_addnl_keys = requests.get(url = url).json()
-        dic.udpate(dic_addnl_keys)
+        dic.update(dic_addnl_keys)
 
     # Send the fetched key-value pairs to the new node
     url = "http://" + node + "/bulk_update_keys"
