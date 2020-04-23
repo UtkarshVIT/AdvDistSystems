@@ -47,5 +47,5 @@ sudo a2enmod wsgi
 sudo service apache2 restart
 
 #Append to the logs of the web server
-#sudo tail -f /var/log/apache2/error.log | grep DYNAMO_MOCK
-sudo tail -f /var/log/apache2/error.log
+sudo tail -f /var/log/apache2/error.log | grep -o "DYNAMO_MOCK.*"
+#sudo tail -f /var/log/apache2/error.log

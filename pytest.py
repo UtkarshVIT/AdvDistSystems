@@ -7,7 +7,7 @@ import threading
 import time
 
 lb_addr = "18.190.25.30:80"
-var1 = "3.21.171.240:80"
+var1 = "3.16.111.212:80"
 var2 = "3.21.171.240:80"
 var3 = "3.15.191.148:80"
 
@@ -70,7 +70,7 @@ class TestStringMethods(unittest.TestCase):
 			self.assertEqual( r.text, key_map[key])
 
 	#Testing scale and broadcast
-	@unittest.skip("skipiing this")
+	#@unittest.skip("skipiing this")
 	def test_03_system_scale_up(self):
 		route_url = "http://" + lb_addr + "/add_node/5000/" + standby_addr
 		r = requests.get(url = route_url)
@@ -87,7 +87,7 @@ class TestStringMethods(unittest.TestCase):
 			keys = sorted(result["ring"].keys())
 			self.assertEqual(keys, ['3000', '5000', '8000'])
 
-	@unittest.skip("skipiing this")
+	#@unittest.skip("skipiing this")
 	def test_04_system_scale_down(self):
 		route_url = "http://" + lb_addr + "/remove_node/" + removenode_addr
 		r = requests.get(url = route_url)
