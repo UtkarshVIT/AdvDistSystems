@@ -5,10 +5,10 @@
 #description     :This script will reconfigure the system to default State
 #==============================================================================
 
-node1="3.16.111.212:80"
-node2="3.21.171.240:80"
-node3="3.15.191.148:80"
-loadbalancer="152.46.19.77:80"
+node1="172.23.0.3:5000"
+node2="172.23.0.4:5000"
+node3="172.23.0.5:5000"
+loadbalancer="172.23.0.6:5000"
 
 curl $node1/clear_cache
 curl $node2/clear_cache

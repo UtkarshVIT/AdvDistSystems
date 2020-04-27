@@ -3,14 +3,14 @@ import requests
 from flask import Flask, session, request, jsonify
 import logging
 import md5
-from werkzeug.contrib.cache import MemcachedCache
+from werkzeug.contrib.cache import SimpleCache
 import json
 import ConsistentHashRing
 
 import sys
 
 #Global object for handling the cache
-cache = MemcachedCache(['0.0.0.0:11211'], default_timeout=0)
+cache = SimpleCache()
 
 #Globabl app object
 app = Flask(__name__)
@@ -237,8 +237,11 @@ def remove_node(node):
 
     # Broadcast the update in routing information
     print('DYNAMO_MOCK: SENDING UPDATE ROUTING INFO BROADCAST')
-    for _key in hash_ring.ring.keys():
-        url = "http://" + hash_ring.ring[_key] + "/update_ring"
+    
+    broadcast_nodes = [ hash_ring.ring[_key] for _key in hash_ring.ring.keys()]
+
+    for _node in broadcast_nodes:
+        url = "http://" + _node + "/update_ring"
         requests.post(url = url, data = {'ip': node, 'key': key, "task": 'remove'})
 
     return 'OK'

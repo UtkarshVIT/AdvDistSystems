@@ -39,10 +39,10 @@ Todo:
 	loadbalancer before executing the testcases.
 
 """
-lb_addr = "18.190.25.30:80"
-var1 = "3.16.111.212:80"
-var2 = "3.21.171.240:80"
-var3 = "3.15.191.148:80"
+lb_addr = "172.23.0.6:5000"
+var1 = "172.23.0.3:5000"
+var2 = "172.23.0.4:5000"
+var3 = "172.23.0.5:5000"
 
 standby_addr = var3
 removenode_addr = var2
@@ -127,7 +127,7 @@ class TestScaling(unittest.TestCase):
 		test_keys = ['finger', 'gate', 'gas']
 		for test_key in test_keys:
 			params = {"key": test_key}
-			route_url = "http://" + lb_addr + "/route_test"
+			route_url = "http://" + var1 + "/route_test"
 			result = requests.get(url = route_url, params = params).text
 			self.assertEqual(result, migrated_to_addr)
 
