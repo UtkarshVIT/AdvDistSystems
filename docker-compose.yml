@@ -1,3 +1,6 @@
+# Setup the docker environment
+# Author: Utkarsh Sharma
+
 version: '3'  # version of compose format 
 
 services:

@@ -1,3 +1,11 @@
+#!/bin/bash -       
+#title           :setup.sh
+#author		     :Utkarsh Sharma
+#usage		     :sh setup.sh
+#description     :This script will install the Apache, flask, wsgi and Memcached
+#                 on the Ubuntu image and deploy the app on the appropriate IPs
+#==============================================================================
+
 #sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/production/setup.sh
 
 #expose public port for app
@@ -48,4 +56,3 @@ sudo service apache2 restart
 
 #Append to the logs of the web server
 sudo tail -f /var/log/apache2/error.log | grep -o "DYNAMO_MOCK.*"
-#sudo tail -f /var/log/apache2/error.log
