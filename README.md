@@ -51,6 +51,7 @@ Repeat step 1 and 2 from the **'Running Test Cases'** section above and then pro
 1. Set a env variable for the load balancer
 
 ```$lb="172.23.0.6:5000"```
+
 2. Adding a key-val pair [sending POST to LB]
 
 ```$curl --data "key=<custom-key>&val=<custom-val>" $lb/route```
