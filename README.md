@@ -16,12 +16,12 @@ Each node in the system is a Ubuntu 18 image running a Flask application on the 
 ###### Experimental Setup
 Our present system is based on the following setup. You can modify the system based on your preferences by editing the docker-compose.yml file. We have two nodes in the default state. These two nodes are Ubuntu containers running a Flask app communicating with each other via HTTP in a docker network. There is a load balancer which uses round robin algorithm to distribute load between these two nodes. We also have a standby container running the sample Flask app which we will use later for scaling up. The fourth container is a client which will interact with the system and run the test cases.
 <pre>
-      (3000)                               
-      ____n1___   <┅┅┓       n3 (standby)       |    n1     = 172.23.0.3
-     |              |          ┃                                 |    n2     = 172.23.0.4
-	 |              |          LB    <----   client           |    n3     =  172.23.0.5
-     |___n2___ |   (load balancer)                     |    LB     = 172.23.0.6
-       (8000)                                                  |  client    = 172.23.0.7 
+        (3000)                               
+      ____n1___   ⇦┅┅┓      n3 (standby)       |    n1     = 172.23.0.3
+     |        |      ┃                         |    n2     = 172.23.0.4
+     |        |      LB  <---- client          |    n3     =  172.23.0.5
+     |___n2___|   (load balancer)              |    LB     = 172.23.0.6
+       (8000)                                  |  client    = 172.23.0.7 
 </pre>
 
 ##### Deployment
