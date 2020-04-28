@@ -27,6 +27,7 @@ Our present experimental system is based on the following setup. You can modify 
 
 ### Deployment
 1. Running the containers
+
 Run the following command to deploy the system and attach the host session to the logs of the spawned containers
 
 ```$docker-compose up```
@@ -37,11 +38,13 @@ Run the following command to deploy the system and attach the host session to th
 ```$docker container exec -it advdistsystems_client_1 /bin/bash``` 
  
 2. Reconfigure the system
+
 Reconfigure the system to clear cache and update routing information. The [reconfigure.sh](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/reconfigure.sh) file in the root directory is updated with the information of the experimental setup. Update the file iff you are using a custom setup. Run the following command from the client's shell
 
 ```$sh reconfigure.sh```
 
 3. Execute test cases.
+
 The following command will simulate four scenarios and exectute the test cases. For detailed information on the test cases see [pytest.py](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/pytest.py)
 
 ```$python pytest.py```
