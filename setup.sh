@@ -6,7 +6,7 @@
 #                 on the Ubuntu image and deploy the app on the appropriate IPs
 #==============================================================================
 
-#sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/production/setup.sh
+#sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/master/setup.sh
 
 #set env variable
 sudo export MODE=PROD
