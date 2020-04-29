@@ -24,7 +24,7 @@ sudo a2enmod wsgi -y
 
 #Setup Memcache on the server
 sudo apt-get install memcached libmemcached-tools -y
-sudo cp /var/www/html/AdvDistSystems/memcached.conf /etc/memcached.conf
+sudo cp /var/www/html/AdvDistSystems/config_files/memcached.conf /etc/memcached.conf
 
 #expose the port for cache
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 11211 -j ACCEPT
@@ -48,7 +48,7 @@ sudo pip install requests
 sudo pip install python-memcached
 sudo pip uninstall --yes Werkzeug
 sudo pip install Werkzeug==0.16.0
-sudo cp -f /var/www/html/AdvDistSystems/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+sudo cp -f /var/www/html/AdvDistSystems/config_files/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
 #Restart the application and web server
 sudo a2enmod wsgi 
