@@ -1,10 +1,14 @@
+import os
 import md5
 import json
 import hashlib
-from werkzeug.contrib.cache import SimpleCache
+from werkzeug.contrib.cache import SimpleCache, MemcachedCache
 
 #Global object for handling the cache
-cache = SimpleCache()
+if os.environ["MODE"] == "DEV":
+    cache = SimpleCache()
+else:
+    cache = MemcachedCache(['0.0.0.0:11211'], default_timeout=0)
 
 class ConsistentHashRing(object):
     """ 

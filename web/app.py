@@ -3,15 +3,18 @@ import requests
 from flask import Flask, session, request, jsonify
 import logging
 import md5
-from werkzeug.contrib.cache import SimpleCache
+from werkzeug.contrib.cache import SimpleCache, MemcachedCache
 import json
 import ConsistentHashRing
-
+import os
 import sys
 
 #Global object for handling the cache
-cache = SimpleCache()
-
+cache = None
+if os.environ["MODE"] == "DEV":
+    cache = SimpleCache()
+else:
+    cache = MemcachedCache(['0.0.0.0:11211'], default_timeout=0)
 #Globabl app object
 app = Flask(__name__)
 
