@@ -8,6 +8,9 @@
 
 #sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/production/setup.sh
 
+#set env variable
+sudo export MODE=PROD
+
 #expose public port for app
 sudo iptables -I INPUT -p tcp -s 0.0.0.0/0 --dport 80 -j ACCEPT
 sudo ufw allow 80
