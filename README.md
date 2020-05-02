@@ -9,7 +9,7 @@ This is the project source code for a scalable key value store based on [Dynamo 
 This project implements a scalable multi node key value store using [Dynamo Db's](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) consistent hashing policy. The client adds a key value pair and retrieves a value for a key from the system using simple HTTP GET and POST as we will see in the next sections. Similarly a client can add a node to the system and remove a node form the system without having to worry about key migration and updating routing information.
 
 ###### IMPORTANT NOTE
-The source code in the master branch is for running the system on a single host docker environment. For knowing how to run the system on [VCL](https://vcl.ncsu.edu/) or other cloud services please refer to the [production branch] (https://github.com/UtkarshVIT/AdvDistSystems/tree/production) of this repository.
+The source code in the master branch is for running the system on a single host docker environment. For knowing how to run the system on [VCL](https://vcl.ncsu.edu/) or other cloud services please refer to the [production branch](https://github.com/UtkarshVIT/AdvDistSystems/tree/production) of this repository.
 
 ###### Architechture
 Each node in the system is a Ubuntu 18 image running a Flask application on the Python development server and storing the key value in the node itself using [Simple Cache](https://werkzeug.palletsprojects.com/en/0.16.x/contrib/cache/). The nodes communicate with each other via HTTP GET and POST.
