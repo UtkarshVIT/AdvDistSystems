@@ -1,4 +1,4 @@
-# Scalable Key Value Store
+# Scalable Key-Value Store
 This is the project source code for a scalable key value store based on [Dynamo Db's](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) consistent hashing policy for data partitioning. This system was created as part of the corsework for  CSC 724 (Advanced Distributed Systems). 
 
 ### Authors
