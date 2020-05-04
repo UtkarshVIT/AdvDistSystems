@@ -51,6 +51,7 @@ Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/insta
 
 ###### Deployment
 1. Create a VM for each node you want in the system running the Ubuntu 18 image on VCL or any other cloud provider.
+
 2. Attach to the terminal of each node and download the setup.sh file and run it using the command below. Repeat this process for all the nodes deployed in the previous step. This file contains the commands to install all the components of the system. 
 
 ```$sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/master/setup.sh && sh setup.sh```
@@ -64,7 +65,7 @@ Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/insta
 ### Running Test Cases
 
 ###### IMP Note
-Note, the test cases in `./tests/pytest.py` are configured for a 2 node system with a scale up test to expand it to three nodes. 
+For docker deployment, the test cases are configured for the degault setup in docker-compose. For cloud deployment,the test cases in `./tests/pytest.py` are configured for a 2 node system with a scale up test to expand it to three nodes.
 
 ###### Running test case steps
 
