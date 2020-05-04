@@ -32,6 +32,16 @@ Run the following command to deploy the system and attach the host session to th
 
 ```$docker-compose up```
 
+2. Attach to the console of the client using the command below so as to access the docker network. 
+
+```$docker container exec -it advdistsystems_client_1 /bin/bash``` 
+
+3. Reconfigure the system
+
+Run the following command to update the routing information for all the nodes in the system.
+
+```$sh reconfigure.sh``
+
 
 ### Running on Cloud Environment
 The next subsections are for running the system on a cloud environment. This code has been deployed and tested by running on [VCL](https://vcl.ncsu.edu/) and AWS.
