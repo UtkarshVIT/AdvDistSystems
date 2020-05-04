@@ -80,6 +80,7 @@ Reconfigure the system to clear cache and update routing information. The [recon
 ```$sh reconfigure.sh```
 
 3. Reconfiure test Cases.
+
 If running on cloud scenario, the IP addresses of the nodes are pre set for the docker setup. Thus, edit the ip addresses of the nodes in the file `/tests/pytest.py` if running on a cloud deployment else if using docker you can skip this step.
 
 4. Execute test cases.
