@@ -51,31 +51,9 @@ Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/insta
 
 4. Create a Layer 7 load balancer using HAProxy as explained [here](https://upcloud.com/community/tutorials/haproxy-load-balancer-ubuntu/) for VCL or custom create a load balancer using AWS load balancer [service](https://aws.amazon.com/elasticloadbalancing/). 
 
-### Common Commands
-Repeat step 1 and 2 from the **'Running Test Cases'** section above and then proceed as follows
-1. Set a env variable for the load balancer
-
-```$lb="172.23.0.6:5000"```
-
-2. Adding a key-val pair [sending POST to LB]
-
-```$curl --data "key=<custom-key>&val=<custom-val>" $lb/route```
-
-3. Fetching val for a key [sending GET to LB]
-
-```$curl $lb/route?key=<custom-key>```
-
-4. Adding a node to the system
-
-```$curl --data $lb/add_node/<key-of-new-node>/<ip:port-of-new-node>```
-
-5. Removing a node from the system
-
-```$curl $lb/remove_node/<ip:port-of-target-node>```
-
 ### Running Test Cases
 
-###### IMP Notes
+###### IMP Note
 Note, the test cases in `./tests/pytest.py` are configured for a 2 node system with a scale up test to expand it to three nodes. 
 
 ###### Running test case steps
@@ -89,6 +67,7 @@ Note, the test cases in `./tests/pytest.py` are configured for a 2 node system w
 Reconfigure the system to clear cache and update routing information. The [reconfigure.sh](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/reconfigure.sh) file in the root directory is updated with the information of the experimental setup. Update the file iff you are using a custom setup. Run the following command from the client's shell
 
 ```$sh reconfigure.sh```
+
 3. Reconfiure test Cases.
 If running on cloud scenario, the IP addresses of the nodes are pre set for the docker setup. Thus, edit the ip addresses of the nodes in the file `/tests/pytest.py` if running on a cloud deployment else if using docker you can skip this step.
 
@@ -97,6 +76,39 @@ If running on cloud scenario, the IP addresses of the nodes are pre set for the 
 The following command will simulate four scenarios and exectute the test cases. For detailed information on the test cases see [pytest.py](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/pytest.py)
 
 ```$python pytest.py```
+
+### Common Commands
+###### IMP Note
+Please Ensure you have completed Step 1 and Step 2 of **Running test case steps** before running any of the below commands.
+
+###### Commands
+* Set a env variable for the load balancer. 
+
+```$lb="<ip:port-of-load-balancer>"```
+
+For example, in the docker setup use, this command to setup env variable for load balancer.
+
+```$lb="172.23.0.6:5000"```
+
+* Adding a key-val pair [sending POST to LB]
+
+```$curl --data "key=<custom-key>&val=<custom-val>" $lb/route```
+
+* Fetching val for a key [sending GET to LB]
+
+```$curl $lb/route?key=<custom-key>```
+
+* Adding a node to the system
+
+```$curl --data $lb/add_node/<key-of-new-node>/<ip:port-of-new-node>```
+
+For example, in the docker setup use, this command to add a node at key 5000 in the system.
+
+```$curl --data $lb/add_node/5000/172.23.0.5:5000```
+
+* Removing a node from the system
+
+```$curl $lb/remove_node/<ip:port-of-target-node>```
 
 ### Distribution of Work
 1. System setup - Utkarsh
