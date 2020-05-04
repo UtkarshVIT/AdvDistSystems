@@ -72,7 +72,11 @@ Repeat step 1 and 2 from the **'Running Test Cases'** section above and then pro
 ```$curl $lb/remove_node/<ip:port-of-target-node>```
 
 ### Running Test Cases
+
+###### IMP Notes
 Note, the test cases in `./tests/pytest.py` are configured for a 2 node system with a scale up test to expand it to three nodes. 
+
+###### Running test case steps
 
 1. If running the docker setup, attach to the console of the client using the command below. If running on a cloud service, skip this step as ports are public.
 
