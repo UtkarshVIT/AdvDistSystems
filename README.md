@@ -40,7 +40,7 @@ Run the following command to deploy the system and attach the host session to th
 
 Run the following command to update the routing information for all the nodes in the system.
 
-```$sh reconfigure.sh``
+```$sh reconfigure.sh```
 
 
 ### Running on Cloud Environment
