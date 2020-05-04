@@ -91,7 +91,7 @@ The following command will simulate four scenarios and exectute the test cases i
 
 ### Common Commands
 ###### IMP Note
-Please Ensure you have completed Step 1 and Step 2 of **Running test case steps** before running any of the below commands.
+Please Ensure you have completed Step 1 and Step 2 of **Running Test Cases** before running any of the below commands.
 
 ###### Commands
 * Set a env variable for the load balancer. 
