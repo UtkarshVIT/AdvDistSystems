@@ -8,13 +8,13 @@ This is the project source code for a scalable key value store based on [Dynamo 
 ### System Overview
 This project implements a scalable multi node key value store using [Dynamo Db's](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) consistent hashing policy. The client adds a key value pair and retrieves a value for a key from the system using simple HTTP GET and POST as we will see in the next sections. Similarly a client can add a node to the system and remove a node form the system without having to worry about key migration and updating routing information.
 
-###### IMPORTANT NOTE
-The source code in the master branch is for running the system on a single host docker environment. For knowing how to run the system on [VCL](https://vcl.ncsu.edu/) or other cloud services please refer to the [production branch](https://github.com/UtkarshVIT/AdvDistSystems/tree/production) of this repository.
+### Running in Docker Environment
+The next subsections are for running the system on a single host docker environment. For knowing how to run the system on [VCL](https://vcl.ncsu.edu/) or other cloud services please refer to the [Running on Cloud Environment](https://github.com/UtkarshVIT/AdvDistSystems/tree/production) section.
 
 ###### Architechture
-Each node in the system is a Ubuntu 18 image running a Flask application on the Python development server and storing the key value in the node itself using [Simple Cache](https://werkzeug.palletsprojects.com/en/0.16.x/contrib/cache/). The nodes communicate with each other via HTTP GET and POST.
+Each node in the system is a Ubuntu 18 image running a Flask application on the Python development server and storing the key value in the node itself using [Simple Cache](https://werkzeug.palletsprojects.com/en/0.16.x/contrib/cache/). The nodes communicate with each other via HTTP GET and POST. For hashing we have used the md5 hash to calculate the hash of the key and apply modulo 10000 on it so that the max value in the hash ring in 10000.
 
-###### Experimental Setup
+###### Docker Compose Setup
 Our present experimental system is based on the following setup. You can modify the system based on your preferences by editing the docker-compose.yml file. We have two nodes in the default state. These two nodes are Ubuntu containers running a Flask app communicating with each other via HTTP in a docker network. There is a load balancer which uses round robin algorithm to distribute load between these two nodes. We also have a standby container running the sample Flask app which we will use later for scaling up. The fourth container is a client which will interact with the system and run the test cases.
 <pre>
         (3000)                               
@@ -25,12 +25,21 @@ Our present experimental system is based on the following setup. You can modify 
        (8000)                                  |  client    = 172.23.0.7 
 </pre>
 
-### Deployment
+###### Deployment
 1. Running the containers
 
 Run the following command to deploy the system and attach the host session to the logs of the spawned containers
 
 ```$docker-compose up```
+
+
+### Running on Cloud Environment
+The next subsections are for running the system on a cloud environment. This code has been deployed and tested by running on [VCL](https://vcl.ncsu.edu/) and AWS.
+
+###### Architechture
+Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/instance-types/t2/) running the Ubuntu 18 image. The node is running the [Apache](https://httpd.apache.org/) web server. The application is built on Flask development Framework and is running in the node on the Python’s WSGI app server and listening on port 80. The node is also running a [Memcached](https://memcached.org/) server listening on port 11211. The Memcached server is responsible for storing the key value pairs and also for maintaining the state of the hash ring. We are using the Memcached server for storing the state of the hash ring as apache can spawn multiple threads of the application and the state of the hash ring should be consistent across all the threads. The apache web server is running 5 instances of the Flask application. The nodes communicate with each other via HTTP and with the Memcached server via TCP. All nodes are behind a load balancer which is an Ubuntu VM running HAProxy and uses round robin to route requests between servers. For hashing we have used the md5 hash to calculate the hash of the key and apply modulo 10000 on it so that the max value in the hash ring in 10000.
+
+###### Deployment
 
 ### Running Test Cases
 1. Attach to the console of the client 
