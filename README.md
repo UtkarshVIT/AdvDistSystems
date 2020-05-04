@@ -45,7 +45,8 @@ Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/insta
 
 ```$sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/master/setup.sh && sh setup.sh```
 
-3. Edit the `reconfigure.sh` file to confiure the hash table on each node. It is currently configured to deploy a two node system but can be configured to a custom scenario. The reconfiguration details are in the file itself. Complete reconfiguration by running the command below.
+3. Edit the `reconfigure.sh` file to confiure the hash table on each node. It is currently configured to deploy a two node system but can be configured to a custom scenario. The reconfiguration details are in the file itself. Complete system reconfiguration by running the command below.
+
 ```sh reconfigure.sh```
 4. Create a Layer 7 load balancer using HAProxy as explained [here](https://upcloud.com/community/tutorials/haproxy-load-balancer-ubuntu/) for VCL or custom create a load balancer using AWS load balancer [service](https://aws.amazon.com/elasticloadbalancing/). 
 
