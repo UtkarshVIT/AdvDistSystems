@@ -42,7 +42,9 @@ Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/insta
 ###### Deployment
 1. Create a VM for each node you want in the system running the Ubuntu 18 image on VCL or any other cloud provider.
 2. Attach to the terminal of each node and download the setup.sh file and run it using the command below. Repeat this process for all the nodes deployed in the previous step. This file contains the commands to install all the components of the system. 
+
 ```$sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/master/setup.sh && sh setup.sh```
+
 3. Edit the `reconfigure.sh` file to confiure the hash table on each node. It is currently configured to deploy a two node system but can be configured to a custom scenario. The reconfiguration details are in the file itself. Complete reconfiguration by running the command below.
 ```sh reconfigure.sh```
 4. Create a Layer 7 load balancer using HAProxy as explained [here](https://upcloud.com/community/tutorials/haproxy-load-balancer-ubuntu/) for VCL or custom create a load balancer using AWS load balancer [service](https://aws.amazon.com/elasticloadbalancing/). 
