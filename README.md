@@ -97,7 +97,7 @@ The following command will simulate four scenarios and exectute the test cases. 
 ```$python pytest.py```
 
 ### Distribution of Work
-1. System Setup - Utkarsh
+1. System setup - Utkarsh
 2. Routing implementation - Utkarsh
 3. Test case 1 and 2 - Utkarsh
 4. Scale up - Chris
