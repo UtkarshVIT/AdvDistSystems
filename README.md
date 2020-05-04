@@ -85,7 +85,7 @@ If running on cloud scenario, the IP addresses of the nodes are pre set for the 
 
 4. Execute test cases.
 
-The following command will simulate four scenarios and exectute the test cases. For detailed information on the test cases see [pytest.py](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/pytest.py)
+The following command will simulate four scenarios and exectute the test cases in `tests/pytest.py`. For detailed information on the test cases see [pytest.py](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/pytest.py)
 
 ```$python pytest.py```
 
