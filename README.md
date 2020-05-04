@@ -40,25 +40,14 @@ The next subsections are for running the system on a cloud environment. This cod
 Each node is an EC2 instance of type [t2.micro](https://aws.amazon.com/ec2/instance-types/t2/) running the Ubuntu 18 image. The node is running the [Apache](https://httpd.apache.org/) web server. The application is built on Flask development Framework and is running in the node on the Python’s WSGI app server and listening on port 80. The node is also running a [Memcached](https://memcached.org/) server listening on port 11211. The Memcached server is responsible for storing the key value pairs and also for maintaining the state of the hash ring. We are using the Memcached server for storing the state of the hash ring as apache can spawn multiple threads of the application and the state of the hash ring should be consistent across all the threads. The apache web server is running 5 instances of the Flask application. The nodes communicate with each other via HTTP and with the Memcached server via TCP. All nodes are behind a load balancer which is an Ubuntu VM running HAProxy and uses round robin to route requests between servers. For hashing we have used the md5 hash to calculate the hash of the key and apply modulo 10000 on it so that the max value in the hash ring in 10000.
 
 ###### Deployment
+1. Create a VM for each node you want in the system running the Ubuntu 18 image on VCL or any other cloud provider.
+2. Attach to the terminal of each node and download the setup.sh file and run it using the command below. Repeat this process for all the nodes deployed in the previous step. This file contains the commands to install all the components of the system. 
+```$sudo wget https://raw.githubusercontent.com/UtkarshVIT/AdvDistSystems/master/setup.sh && sh setup.sh```
+3. Edit the `reconfigure.sh` file to confiure the hash table on each node. It is currently configured to deploy a two node system but can be configured to a custom scenario. The reconfiguration details are in the file itself. Complete reconfiguration by running the command below.
+```sh reconfigure.sh```
+4. Create a Layer 7 load balancer using HAProxy as explained [here](https://upcloud.com/community/tutorials/haproxy-load-balancer-ubuntu/) for VCL or custom create a load balancer using AWS load balancer [service](https://aws.amazon.com/elasticloadbalancing/). 
 
-### Running Test Cases
-1. Attach to the console of the client 
-
-```$docker container exec -it advdistsystems_client_1 /bin/bash``` 
- 
-2. Reconfigure the system
-
-Reconfigure the system to clear cache and update routing information. The [reconfigure.sh](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/reconfigure.sh) file in the root directory is updated with the information of the experimental setup. Update the file iff you are using a custom setup. Run the following command from the client's shell
-
-```$sh reconfigure.sh```
-
-3. Execute test cases.
-
-The following command will simulate four scenarios and exectute the test cases. For detailed information on the test cases see [pytest.py](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/pytest.py)
-
-```$python pytest.py```
-
-### Running Custom Test Cases
+### Common Commands
 Repeat step 1 and 2 from the **'Running Test Cases'** section above and then proceed as follows
 1. Set a env variable for the load balancer
 
@@ -79,6 +68,27 @@ Repeat step 1 and 2 from the **'Running Test Cases'** section above and then pro
 5. Removing a node from the system
 
 ```$curl $lb/remove_node/<ip:port-of-target-node>```
+
+### Running Test Cases
+Note, the test cases in `./tests/pytest.py` are configured for a 2 node system with a scale up test to expand it to three nodes. 
+
+1. If running the docker setup, attach to the console of the client using the command below. If running on a cloud service, skip this step as ports are public.
+
+```$docker container exec -it advdistsystems_client_1 /bin/bash``` 
+ 
+2. Reconfigure the system
+
+Reconfigure the system to clear cache and update routing information. The [reconfigure.sh](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/reconfigure.sh) file in the root directory is updated with the information of the experimental setup. Update the file iff you are using a custom setup. Run the following command from the client's shell
+
+```$sh reconfigure.sh```
+3. Reconfiure test Cases.
+If running on cloud scenario, the IP addresses of the nodes are pre set for the docker setup. Thus, edit the ip addresses of the nodes in the file `/tests/pytest.py` if running on a cloud deployment else if using docker you can skip this step.
+
+4. Execute test cases.
+
+The following command will simulate four scenarios and exectute the test cases. For detailed information on the test cases see [pytest.py](https://github.com/UtkarshVIT/AdvDistSystems/blob/master/tests/pytest.py)
+
+```$python pytest.py```
 
 ### Distribution of Work
 1. System Setup - Utkarsh
